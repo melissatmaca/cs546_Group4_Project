@@ -1,5 +1,9 @@
 import express from 'express';
-import dotenv from 'dotenv'
+import dotenv from 'dotenv';
+import querystring from 'querystring'
+import { getTopArtists, getTopTracks} from './data/analytics.js'
+import { generateRandomString } from './helpers.js';
+import axios from 'axios';
 dotenv.config();
 let app = express();
 
@@ -8,17 +12,24 @@ app.use(express.urlencoded({extended: true}));
 
 
 const client_id = process.env.CLIENT_ID;
-console.log(client_id)
 const redirect_uri = 'http://localhost:3000';
+const client_secret = process.env.CLIENT_SECRET;
 
 // This it temporary for testing purposes
 app.get('/authorize', (req, res) => {
 
 // Make a fucntion to generate a random string
-  const state = 'aorlpdoteanfksmf';
-  const scope = 'user-read-private user-read-email';
+  const state = generateRandomString();
+  const scope = 'user-read-private user-read-email user-top-read';
 
-  res.redirect(`https://accounts.spotify.com/authorize?response_type=code&client_id=${client_id}&scope=${scope}&redirect_uri=${redirect_uri}&state=${state}`);
+  res.redirect('https://accounts.spotify.com/authorize?' +
+    querystring.stringify({
+      response_type: 'code',
+      client_id: client_id,
+      scope: scope,
+      redirect_uri: redirect_uri,
+      state: state
+    }));
 });
 
 
