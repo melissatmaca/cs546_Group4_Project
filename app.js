@@ -21,7 +21,6 @@ app.get('/authorize', (req, res) => {
   res.redirect(`https://accounts.spotify.com/authorize?response_type=code&client_id=${client_id}&scope=${scope}&redirect_uri=${redirect_uri}&state=${state}`);
 });
 
-app.get('/', )
 
 app.listen(3000, () =>{
     console.log("Server is running!");
