@@ -17,7 +17,6 @@ const client_secret = process.env.CLIENT_SECRET;
 // This it temporary for testing purposes
 app.get('/authorize', (req, res) => {
 
-// Make a fucntion to generate a random string
   const state = generateRandomString();
   const scope = 'user-read-private user-read-email user-top-read';
 
