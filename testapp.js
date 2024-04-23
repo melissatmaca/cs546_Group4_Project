@@ -1,7 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import querystring from 'querystring'
-import { getTopArtists, getTopTracks} from './data/analytics.js'
 import {getRecomendations} from './data/playlistGeneration.js'
 import { generateRandomString } from './helpers.js';
 import axios from 'axios';

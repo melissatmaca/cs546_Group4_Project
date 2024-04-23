@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const getRecomendations = async (genres,tracks, mood, limit, access_token) =>{
+export const getRecomendations = async (genres,tracks, mood, limit, accessToken) =>{
     const response = await axios.get(`https://api.spotify.com/v1/me/top/artists`, {
         headers: {
             'Authorization': `Bearer ${accessToken}`
@@ -16,9 +16,9 @@ export const getRecomendations = async (genres,tracks, mood, limit, access_token
                 'Authorization': `Bearer ${accessToken}`
             }
         });
-        let tracks = [];
+        let tracksL = [];
         for(let track of response.data.items){
-            tracks.push(track.id);
+            tracksL.push(track.id);
         }
 
     let target_acousticness, target_danceability, target_energy, target_instrumentalness, target_liveness, target_speechiness, target_valence;
@@ -69,7 +69,7 @@ export const getRecomendations = async (genres,tracks, mood, limit, access_token
         'limit': limit,
         'seed_artists': artists.join(),
         'seed_genres': genres.join(),
-        'seed_tracks': tracks.join(),
+        'seed_tracks': tracksL.join(),
         'target_acousticness': target_acousticness,
         'target_danceability':target_danceability,
         'target_energy': target_energy,
@@ -79,7 +79,7 @@ export const getRecomendations = async (genres,tracks, mood, limit, access_token
         'target_valence': target_valence
     },
     headers: {
-        'Authorization': 'Example'
+        'Authorization': `Bearer ${accessToken}`
     }
     });
     let ret = [];
