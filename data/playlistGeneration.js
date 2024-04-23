@@ -1,6 +1,26 @@
 import axios from 'axios';
 
-export const getRecomendations = async (artists, genres,tracks, mood, limit) =>{
+export const getRecomendations = async (genres,tracks, mood, limit, access_token) =>{
+    const response = await axios.get(`https://api.spotify.com/v1/me/top/artists`, {
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        }
+    });
+
+    let artists = [];
+    for(let artist of response.data.items){
+        artists.push(artist.id);
+    }
+    response = await axios.get(`https://api.spotify.com/v1/me/top/tracks`, {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
+        let tracks = [];
+        for(let track of response.data.items){
+            tracks.push(track.id);
+        }
+
     let target_acousticness, target_danceability, target_energy, target_instrumentalness, target_liveness, target_speechiness, target_valence;
     //Values subject to testing
     if (mood === "energetic") {
@@ -44,7 +64,7 @@ export const getRecomendations = async (artists, genres,tracks, mood, limit) =>{
         target_speechiness = 0.5;
         target_valence = 0.5;
     }
-    const response = await axios.get('https://api.spotify.com/v1/recommendations', {
+    response = await axios.get('https://api.spotify.com/v1/recommendations', {
     params: {
         'limit': limit,
         'seed_artists': artists.join(),
