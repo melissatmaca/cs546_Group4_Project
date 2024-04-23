@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-export const getRecomendations = async (genres,tracks, mood, limit, accessToken) =>{
-    const response = await axios.get(`https://api.spotify.com/v1/me/top/artists`, {
+export const getRecomendations = async (genres, mood, limit, accessToken) =>{
+    let response = await axios.get(`https://api.spotify.com/v1/me/top/artists`, {
         headers: {
             'Authorization': `Bearer ${accessToken}`
         }
@@ -67,9 +67,9 @@ export const getRecomendations = async (genres,tracks, mood, limit, accessToken)
     response = await axios.get('https://api.spotify.com/v1/recommendations', {
     params: {
         'limit': limit,
-        'seed_artists': artists.join(),
-        'seed_genres': genres.join(),
-        'seed_tracks': tracksL.join(),
+        'seed_artists': artists[0]+','+artists[1],
+        'seed_genres': genres[0]+','+genres[1],
+        'seed_tracks': tracksL[0],
         'target_acousticness': target_acousticness,
         'target_danceability':target_danceability,
         'target_energy': target_energy,
@@ -82,9 +82,10 @@ export const getRecomendations = async (genres,tracks, mood, limit, accessToken)
         'Authorization': `Bearer ${accessToken}`
     }
     });
+
     let ret = [];
     for(let i = 0; i<limit; i++){
-        ret.push(response.tracks[i].id);
+        ret.push(response.data.tracks[i].name + ' ' + response.data.tracks[i].artist);
     }
     return ret;
 }
