@@ -1,0 +1,50 @@
+<div id="profileMainContainer">
+
+    <h1 id="usernameHeader">Hello, {{username}}!</h1>
+
+    <div id="dashboardContainer">
+
+        <div id="numFollowersCard" class="analyticsCard">
+            <h2 class="analyticsCardTitle">Number of Followers:</h2>
+            <p>{{numFollowers}}</p>
+        </div>
+        
+        <div id="topTracksCard" class="analyticsCard">
+            <h2 class="analyticsCardTitle">Top Tracks:</h2>
+            <ol class="topList">
+            {{#each topTracks}}
+                <li class="topItens">{{this}}</li>
+            {{/each}}
+            </ol>
+        </div>
+
+        <div id="topArtistsCard" class="analyticsCard">
+            <h2 class="analyticsCardTitle">Top Artists:</h2>
+            <ol class="topList">
+            {{#each topArtists}}
+                <li class="topItens">{{this}}</li>
+            {{/each}}
+            </ol>
+        </div>
+
+        <div id="genreCard" class="analyticsCard">
+            <h2 class="analyticsCardTitle">Genre Diversity:</h2>
+        </div>
+
+
+    </div>
+
+    <div id="playlistsContainer">
+        <div id="playlistSelector">
+            <div id="savedPlaylists">
+
+
+            </div>
+            <div id="createdPlaylist">
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
