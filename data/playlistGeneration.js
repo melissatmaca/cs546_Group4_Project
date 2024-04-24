@@ -112,3 +112,15 @@ export const getRecomendations = async (genres, mood, limit, accessToken, title,
 
     return ret;
 }
+
+export const gen = async (access_token) =>{
+const response = await axios.get('https://api.spotify.com/v1/recommendations/available-genre-seeds', {
+  headers: {
+    'Authorization': `Bearer ${access_token}`
+  }
+});
+
+    console.log(response.data.genres);
+    console.log(response.data.genres.slice(-26))
+    return response.data.genres;
+}
