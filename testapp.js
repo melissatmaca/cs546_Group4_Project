@@ -63,7 +63,7 @@ app.get('/', async (req, res) => {
 
 
           let genres = ["edm", "progressive trance", "trance", "uplifting trance"];
-      const topArtists = await getGenreBreakdown(access_token, 50);
+      const topArtists = await getGenreBreakdown(access_token);
       res.send(topArtists);
     } catch (error) {
       console.error('Error exchanging code for access token:', error);
