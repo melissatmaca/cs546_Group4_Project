@@ -109,6 +109,5 @@ export const getRecomendations = async (genres, mood, limit, accessToken, title,
     for(let i = 0; i<limit; i++){
         ret.push(response.data.tracks[i].id);
     }
-
     return ret;
 }
