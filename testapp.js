@@ -61,7 +61,7 @@ app.get('/', async (req, res) => {
         const access_token = response.data.access_token;
 
 
-          let genres = ["edm", "progressive trance", "trance", "uplifting trance"];
+      let genres = ["edm", "progressive trance", "trance", "uplifting trance"];
       const topArtists = await getRecomendations(genres, "energetic", 40, access_token, "testplaylist", "playlist for testing");
       res.send(topArtists);
     } catch (error) {
