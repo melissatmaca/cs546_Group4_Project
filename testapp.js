@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import querystring from 'querystring'
 import {getRecomendations} from './data/playlistGeneration.js'
 import { generateRandomString } from './helpers.js';
+import {getTopArtists, getTopTracks, getGenreBreakdown } from './data/analytics.js'
 import axios from 'axios';
 dotenv.config();
 let app = express();
@@ -61,8 +62,8 @@ app.get('/', async (req, res) => {
         const access_token = response.data.access_token;
 
 
-      let genres = ["edm", "progressive trance", "trance", "uplifting trance"];
-      const topArtists = await getRecomendations(genres, "energetic", 40, access_token, "testplaylist", "playlist for testing");
+          let genres = ["edm", "progressive trance", "trance", "uplifting trance"];
+      const topArtists = await getGenreBreakdown(access_token);
       res.send(topArtists);
     } catch (error) {
       console.error('Error exchanging code for access token:', error);
