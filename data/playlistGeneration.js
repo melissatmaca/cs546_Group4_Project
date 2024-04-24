@@ -1,6 +1,7 @@
 import axios from 'axios';
+import * as c from "../config/mongoCollections.js";
 
-export const getRecomendations = async (genres, mood, limit, accessToken) =>{
+export const getRecomendations = async (genres, mood, limit, accessToken, title, caption) =>{
     let response = await axios.get(`https://api.spotify.com/v1/me/top/artists`, {
         headers: {
             'Authorization': `Bearer ${accessToken}`
@@ -76,7 +77,8 @@ export const getRecomendations = async (genres, mood, limit, accessToken) =>{
         'target_instrumentalness': target_instrumentalness,
         'target_liveness': target_liveness,
         'target_speechiness':target_speechiness,
-        'target_valence': target_valence
+        'target_valence': target_valence,
+        'min_duration_ms': 150000
     },
     headers: {
         'Authorization': `Bearer ${accessToken}`
@@ -85,7 +87,28 @@ export const getRecomendations = async (genres, mood, limit, accessToken) =>{
 
     let ret = [];
     for(let i = 0; i<limit; i++){
-        ret.push(response.data.tracks[i].name + ' ' + response.data.tracks[i].artist);
+        ret.push(response.data.tracks[i].id);
     }
+    const playlistCollection = await c.playlists();
+
+    let newPlaylist = {
+        user: "n/a",
+        title: title,
+        caption: caption,
+        posted: false,
+        tracks: tracksL,
+        likes: [],
+        comments: []
+    }
+
+    const insertInfo = await playlistCollection.insertOne(newPlaylist);
+    if (!insertInfo.acknowledged || !insertInfo.insertedId)
+    throw 'Could not add playlist';
+
+    ret = [];
+    for(let i = 0; i<limit; i++){
+        ret.push(response.data.tracks[i].name);
+    }
+
     return ret;
 }
