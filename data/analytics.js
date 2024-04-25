@@ -96,3 +96,32 @@ export const getGenreBreakdown = async (accessToken) => {
 
     return countOfGenres;
 };
+
+
+export const getSpotifyFollowers = async (accessToken) => {
+
+    try{
+        const response = await axios.get('https://api.spotify.com/v1/me', {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
+        return response.data.followers.total;
+    }catch(e){
+        if (e.code === 'ENOTFOUND') throw 'Error: Invalid URL';
+        else if (e.response) throw `Error: ${e.response.status}: ${e.response.statusText}`;
+        else throw `Error: ${e}`;
+    }
+};
+
+// Get these from the database
+export const getSavedPlaylists = () => {
+
+
+};
+
+// Get these from the database
+export const getLikedPlaylists = () => {
+
+
+};
