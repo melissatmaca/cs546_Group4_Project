@@ -1,5 +1,5 @@
 import * as c from "../config/mongoCollections.js";
-import { ObjectId, ReturnDocument } from "mongodb";
+import { ObjectId } from "mongodb";
 
 // getting the data for how the posts are viewed (social feed)
 export const getFeed = async () => {
@@ -23,6 +23,7 @@ export const addComment = async (comment, playlistId) => {
 
   // CHECK IF THE PLAYLIST IS POSTED
   const playlistsCollection = await c.playlists();
+  if (!playlistsCollection) throw `Database not found`;
   let playlist = await playlistsCollection.findOne({
     _id: new ObjectId(playlistId),
   });
@@ -41,4 +42,46 @@ export const addComment = async (comment, playlistId) => {
   );
   if (!updated) throw `Failed to add comment!`;
   return updated;
+};
+
+export const addLike = async (userId, playlistId) => {
+  // input validation for both ids
+
+  const playlistsCollection = await c.playlists();
+  if (!playlistsCollection) throw `Database not found`;
+  let playlist = await playlistsCollection.findOne({
+    _id: new ObjectId(playlistId),
+  });
+  if (!playlist) throw `Could not find playlist with the id: ${playlistId}`;
+  if (playlist.posted !== true)
+    throw `The playlist with the id ${playlistId} is not posted`;
+  // push userId to the playlists "likes" array parameter
+  let likeAdded = await playlistsCollection.findOneAndUpdate(
+    { _id: new ObjectId(playlistId) },
+    { $push: { likes: userId } },
+    { returnDocument: "after" }
+  );
+  if (!likeAdded) throw `Failed to add comment!`;
+  return likeAdded; // NOTE: if this passes, be sure to pass the length of "likes" AFTER insertion/deletion;
+};
+
+export const removeLike = async (userId, playlistId) => {
+  // input validation for both ids
+
+  const playlistsCollection = await c.playlists();
+  if (!playlistsCollection) throw `Database not found`;
+  let playlist = await playlistsCollection.findOne({
+    _id: new ObjectId(playlistId),
+  });
+  if (!playlist) throw `Could not find playlist with the id: ${playlistId}`;
+  if (playlist.posted !== true)
+    throw `The playlist with the id ${playlistId} is not posted`;
+  // push userId to the playlists "likes" array parameter
+  let likeRemoved = await playlistsCollection.findOneAndUpdate(
+    { _id: new ObjectId(playlistId) },
+    { $pull: { likes: userId } },
+    { returnDocument: "after" }
+  );
+  if (!likeRemoved) throw `Failed to add comment!`;
+  return likeRemoved; // NOTE: if this passes, be sure to pass the length of "likes" AFTER insertion/deletion;
 };
