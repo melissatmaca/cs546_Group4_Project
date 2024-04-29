@@ -1,4 +1,5 @@
 import * as c from "../config/mongoCollections.js";
+import * as helper from "../helpers.js";
 import { ObjectId } from "mongodb";
 
 // getting the data for how the posts are viewed (social feed)
@@ -6,21 +7,20 @@ export const getFeed = async () => {
   // get the playlists that are posted
   const playlistsCollection = await c.playlists();
   if (!playlistsCollection) throw `Database not found`;
-  // want only the first 5 tracks, title, caption, user, likes, comments
   let sharedPlaylists = await playlistsCollection
     .find({ shared: true })
     .toArray();
   if (!sharedPlaylists) throw `Could not retrieve playlists`;
-  // I'll get the first 5 playlists later
+  // I'll get the first 5 tracks in each playlist later, probably in the routes before rendering a handlebar
   return sharedPlaylists;
 };
 
 // adding one comment (str: comment, str: playlistId)
 export const addComment = async (comment, playlistId) => {
   // comment validation
-
+  comment = helper.checkComment(comment, "Comment");
   // playlistId validation
-
+  playlistId = helper.checkID(playlistId, "PlaylistID");
   // CHECK IF THE PLAYLIST IS POSTED
   const playlistsCollection = await c.playlists();
   if (!playlistsCollection) throw `Database not found`;
@@ -46,7 +46,8 @@ export const addComment = async (comment, playlistId) => {
 
 export const addLike = async (userId, playlistId) => {
   // input validation for both ids
-
+  userId = helper.checkID(userId, "UserID");
+  playlistId = helper.checkID(playlistId, "PlaylistID");
   const playlistsCollection = await c.playlists();
   if (!playlistsCollection) throw `Database not found`;
   let playlist = await playlistsCollection.findOne({
@@ -61,13 +62,14 @@ export const addLike = async (userId, playlistId) => {
     { $push: { likes: userId } },
     { returnDocument: "after" }
   );
-  if (!likeAdded) throw `Failed to add comment!`;
+  if (!likeAdded) throw `Failed to add like!`;
   return likeAdded; // NOTE: if this passes, be sure to pass the length of "likes" AFTER insertion/deletion;
 };
 
 export const removeLike = async (userId, playlistId) => {
   // input validation for both ids
-
+  userId = helper.checkID(userId, "UserID");
+  playlistId = helper.checkID(playlistId, "PlaylistID");
   const playlistsCollection = await c.playlists();
   if (!playlistsCollection) throw `Database not found`;
   let playlist = await playlistsCollection.findOne({
@@ -82,6 +84,6 @@ export const removeLike = async (userId, playlistId) => {
     { $pull: { likes: userId } },
     { returnDocument: "after" }
   );
-  if (!likeRemoved) throw `Failed to add comment!`;
+  if (!likeRemoved) throw `Failed to remove like!`;
   return likeRemoved; // NOTE: if this passes, be sure to pass the length of "likes" AFTER insertion/deletion;
 };
