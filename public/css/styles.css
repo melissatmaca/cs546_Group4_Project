@@ -1,0 +1,12 @@
+/* make each playlist post on socialFeed "clickable" (click on the div to view the playlist) */
+div.playlist {
+  background-color: #f00;
+  width: 200px;
+  height: 200px;
+}
+a.fill-div {
+  display: block;
+  height: 100%;
+  width: 100%;
+  text-decoration: none;
+}

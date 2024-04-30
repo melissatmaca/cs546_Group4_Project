@@ -16,10 +16,11 @@ export const getFeed = async () => {
 };
 
 // adding one comment (str: comment, str: playlistId)
-export const addComment = async (comment, playlistId) => {
+export const addComment = async (comment, userId, playlistId) => {
   // comment validation
   comment = helper.checkComment(comment, "Comment");
-  // playlistId validation
+  // id validations
+  userId = helper.checkID(userId, "UserID");
   playlistId = helper.checkID(playlistId, "PlaylistID");
   // CHECK IF THE PLAYLIST IS POSTED
   const playlistsCollection = await c.playlists();
@@ -30,10 +31,22 @@ export const addComment = async (comment, playlistId) => {
   if (!playlist) throw `Could not find playlist with the id: ${playlistId}`;
   if (playlist.posted !== true)
     throw `The playlist with the id ${playlistId} is not posted`;
+  // CHECK IF USER EXISTS
+  const usersCollection = await c.users();
+  if (!usersCollection) throw `Database not found`;
+  let user = await usersCollection.findOne({
+    _id: new ObjectId(userId),
+  });
+  if (!user) throw `Could not find user with the id: ${userId}`;
   // push comment to the comment array (with the date)
   let date = new Date();
   let datePosted = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
-  let commentObj = { _id: new ObjectId(), comment: comment };
+  let commentObj = {
+    _id: new ObjectId(),
+    comment: comment,
+    author: user.userName,
+    postDate: datePosted,
+  };
   // RENDER THE USERNAME AND A LINK TO THE COMMENTER'S ACCOUNT (if we don't store this in the comments subdoc)
   let updated = await playlistsCollection.findOneAndUpdate(
     { _id: new ObjectId(playlistId) },
@@ -63,7 +76,7 @@ export const addLike = async (userId, playlistId) => {
     { returnDocument: "after" }
   );
   if (!likeAdded) throw `Failed to add like!`;
-  return likeAdded; // NOTE: if this passes, be sure to pass the length of "likes" AFTER insertion/deletion;
+  return likeAdded.length; // NOTE: if this passes, be sure to pass the length of "likes" AFTER insertion/deletion;
 };
 
 export const removeLike = async (userId, playlistId) => {
@@ -85,7 +98,7 @@ export const removeLike = async (userId, playlistId) => {
     { returnDocument: "after" }
   );
   if (!likeRemoved) throw `Failed to remove like!`;
-  return likeRemoved; // NOTE: if this passes, be sure to pass the length of "likes" AFTER insertion/deletion;
+  return likeRemoved.length; // NOTE: if this passes, be sure to pass the length of "likes" AFTER insertion/deletion;
 };
 
 // TODO(?) add a "removeComment" data function?
