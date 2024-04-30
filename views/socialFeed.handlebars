@@ -2,6 +2,7 @@
     <div id="playlists">
         {{#each playlists}}
         <div class="playlist" id="{{this._id}}">
+            <a href="/playlist/{{this._id}}" class="fill-div"></a>
             <h2>{{this.title}}</h2>
             <p>{{this.caption}}</p>
             <div class="social">
