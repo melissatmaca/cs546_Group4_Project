@@ -1,16 +1,17 @@
 import * as c from "../config/mongoCollections.js";
+import axios from 'axios';
 import {ObjectId} from 'mongodb';
 
 export const getAll = async () => {
   const playlistCollection = await c.playlists();
-  const playlistList = await playlistCollection.find({}).sort({"timestamp": -1}).toArray();
+  const playlistList = await playlistCollection.find({}).toArray();
   if (!playlistList) throw 'Could not get all playlists';
   return playlistList;
 };
 
 export const getAllPosted = async () => {
     const playlistCollection = await c.playlists();
-    const playlistList = await playlistCollection.find({posted: true}).sort({"timestamp": -1}).toArray();
+    const playlistList = await playlistCollection.find({posted: true}).toArray();
     if (!playlistList) throw 'Could not get all playlists';
     return playlistList;
   };
@@ -40,3 +41,15 @@ export const remove = async (playlistID) => {
     if (!deletionInfo) { throw `Could not delete product with id of ${playlistID}`;}
     return `${deletionInfo.title} has been successfully deleted!`;
   };
+
+export const getPlaylistJSON = async (arr, accessToken) => {
+  const response = await axios.get('https://api.spotify.com/v1/tracks', {
+    params: {
+      'ids': arr.join()
+    },
+    headers: {
+        'Authorization': `Bearer ${accessToken}`
+    }
+  });
+  return response.data.tracks;
+}

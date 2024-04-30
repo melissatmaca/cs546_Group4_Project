@@ -116,7 +116,8 @@ export const getRecomendations = async (genres, mood, limit, accessToken, title,
     const playlistCollection = await c.playlists();
 
     let newPlaylist = {
-        user: "n/a",
+        userID: "n/a",
+        userName: "n/a",
         title: title,
         caption: caption,
         posted: false,
