@@ -32,7 +32,7 @@ export const addComment = async (comment, playlistId) => {
     throw `The playlist with the id ${playlistId} is not posted`;
   // push comment to the comment array (with the date)
   let date = new Date();
-  let datePosted = `${date.toLocaleDateString} ${date.toLocaleTimeString}`;
+  let datePosted = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
   let commentObj = { _id: new ObjectId(), comment: comment };
   // RENDER THE USERNAME AND A LINK TO THE COMMENTER'S ACCOUNT (if we don't store this in the comments subdoc)
   let updated = await playlistsCollection.findOneAndUpdate(
@@ -87,3 +87,5 @@ export const removeLike = async (userId, playlistId) => {
   if (!likeRemoved) throw `Failed to remove like!`;
   return likeRemoved; // NOTE: if this passes, be sure to pass the length of "likes" AFTER insertion/deletion;
 };
+
+// TODO(?) add a "removeComment" data function?
