@@ -1,0 +1,18 @@
+<h1>{{playlistTitle}}</h1>
+<p>Owner: {{ownerName}}</p>
+<p>{{caption}}</p>
+{{#if isOwner}}
+    <form id="deleteForm" action="/playlist" method="POST">
+        <button type="submit">Delete Playlist</button>
+    </form>
+{{/if}}
+<ol>
+    {{#each playlistData}}
+        <li class="track-list">
+            <img src="{{album.images.[0].url}}" alt="{{album.name}} Cover" width="200">
+            <h2>{{name}}</h2>
+            <p>Artist: {{artists.[0].name}}</p>
+            <p>Album: {{album.name}}</p>
+        </li>
+    {{/each}}
+</ol>
