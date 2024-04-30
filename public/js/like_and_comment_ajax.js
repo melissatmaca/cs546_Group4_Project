@@ -1,1 +1,3 @@
-(function ($) {})(window.jQuery);
+(function ($) {
+    
+})(window.jQuery);
