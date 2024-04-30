@@ -95,8 +95,9 @@ try{
       return res.status(400).json({error: e});
     }
     //try getting the post by ID
+    let playlist;
     try {
-      const playlist = await get(req.params.id.trim());
+      playlist = await get(req.params.id.trim());
       return res.json(playlist);
     } catch (e) {
       return res.status(404).json({error: e});
