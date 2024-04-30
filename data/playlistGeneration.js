@@ -130,5 +130,7 @@ export const getRecomendations = async (genres, mood, limit, accessToken, title,
     if (!insertInfo.acknowledged || !insertInfo.insertedId)
     throw 'Could not add playlist';
 
+
     return insertInfo.insertedId.toString();
+
 }
