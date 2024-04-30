@@ -2,11 +2,13 @@ import {Router} from 'express';
 const router = Router();
 
 import * as PG from '../data/playlistGeneration'
+import {get, getAll, getAllPosted, remove} from '../data/playlists.js' 
 
 router.route('/').get(async (req, res) => {
 
-    return res.render('/login', ({title: "login"}));
-  });
+  res.redirect('/login');
+  return;
+});
 
   router
   .route('/generator')
@@ -76,3 +78,48 @@ try{
   }
   });  
 
+
+
+  router
+  .route('/playlist/:id')
+  .get(async (req, res) => {
+    try {
+      let playlistID = req.params.id;
+      if (!playlistID) throw 'You must provide an id to search for';
+      if (typeof playlistID !== 'string') throw 'Id must be a string';
+      playlistID = playlistID.trim();
+      if (playlistID.length === 0) throw 'id cannot be an empty string or just spaces';
+      if (!ObjectId.isValid(playlistID)) throw "Not Valid ID";
+    } catch (e) {
+      // console.log(e);
+      return res.status(400).json({error: e});
+    }
+    //try getting the post by ID
+    try {
+      const playlist = await get(req.params.id.trim());
+      return res.json(playlist);
+    } catch (e) {
+      return res.status(404).json({error: e});
+    }
+  })
+  .delete(async (req, res) => {
+    try {
+      let playlistID = req.params.id;
+      if (!playlistID) throw 'You must provide an id to search for';
+      if (typeof playlistID !== 'string') throw 'Id must be a string';
+      playlistID = playlistID.trim();
+      if (playlistID.length === 0) throw 'id cannot be an empty string or just spaces';
+      if (!ObjectId.isValid(playlistID)) throw "Not Valid ID";
+    } catch (e) {
+      return res.status(400).json({error: e});
+    }
+    //try to delete post
+    try {
+      
+      let deletedPlaylist = await remove(req.params.id.trim());
+      return res.json(deletedPlaylist);
+    } catch (e) {
+      console.log(e);
+      return res.status(404).json({error: e});
+    }
+  })

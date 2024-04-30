@@ -3,14 +3,14 @@ import {ObjectId} from 'mongodb';
 
 export const getAll = async () => {
   const playlistCollection = await c.playlists();
-  const playlistList = await playlistCollection.find({}).sort({"timestamp": -1}).toArray();
+  const playlistList = await playlistCollection.find({}).toArray();
   if (!playlistList) throw 'Could not get all playlists';
   return playlistList;
 };
 
 export const getAllPosted = async () => {
     const playlistCollection = await c.playlists();
-    const playlistList = await playlistCollection.find({posted: true}).sort({"timestamp": -1}).toArray();
+    const playlistList = await playlistCollection.find({posted: true}).toArray();
     if (!playlistList) throw 'Could not get all playlists';
     return playlistList;
   };
