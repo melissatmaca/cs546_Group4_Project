@@ -72,7 +72,7 @@ try{
     let genRet = await PG.getRecomendations(genres,mood,limit,accessToken,title,caption);
 
     if(genRet){
-    res.redirect('/playlistPage');
+    res.redirect(`/playlists/${genRet}`);
     }
   }catch(e){
     res.render('generator', {title:"generator", Error: e})
