@@ -2,7 +2,7 @@ import {Router} from 'express';
 const router = Router();
 
 import * as PG from '../data/playlistGeneration'
-import {get, getAll, getAllPosted, remove} from '../data/playlists.js' 
+import {get, getAll, getAllPosted, remove, getPlaylistJSON} from '../data/playlists.js' 
 
 router.route('/').get(async (req, res) => {
 
@@ -95,13 +95,29 @@ try{
       return res.status(400).json({error: e});
     }
     //try getting the post by ID
-    let playlist;
+    let playlist, playlistData, playlistTitle, ownerName, caption, isOwner;
     try {
       playlist = await get(req.params.id.trim());
-      return res.json(playlist);
     } catch (e) {
       return res.status(404).json({error: e});
     }
+    
+    try{
+      playlistData = await getPlaylistJSON(playlist.tracks, req.session.user.accessToken);
+      playlistTitle = playlist.title;
+      ownerName = playlist.userName;
+      caption = playlist.caption;
+      isOwner = (req.session.user.id == playlist.userID)
+    } catch(e){
+      return res.status(404).json({error: e});
+    }
+    res.render('playlist', { 
+      playlistData,
+      playlistTitle,
+      ownerName,
+      caption,
+      isOwner 
+  });
   })
   .delete(async (req, res) => {
     try {

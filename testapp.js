@@ -2,7 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import querystring from 'querystring'
 import {getRecomendations} from './data/playlistGeneration.js'
-import {get, getAll, getAllPosted, remove} from './data/playlists.js'
+import {get, getAll, getAllPosted, remove, getPlaylistJSON} from './data/playlists.js'
 import { generateRandomString } from './helpers.js';
 import {getTopArtists, getTopTracks, getGenreBreakdown, getSpotifyFollowers } from './data/analytics.js'
 import axios from 'axios';
@@ -64,7 +64,7 @@ app.get('/', async (req, res) => {
 
 
       let genres = ["edm", "progressive trance", "trance", "uplifting trance"];
-      const numFollowers = await remove('66284ee048dd3209d18f43ec');
+      const numFollowers = await getPlaylistJSON(['7ouMYWpwJ422jRcDASZB7P','4VqPOruhp5EdPBeR92t6lQ','2takcwOaAZWiXQijPHIx7B'], access_token);
       res.send(numFollowers);
     } catch (error) {
       console.error('Error exchanging code for access token:', error);
