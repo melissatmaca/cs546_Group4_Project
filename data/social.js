@@ -76,7 +76,7 @@ export const addLike = async (userId, playlistId) => {
     { returnDocument: "after" }
   );
   if (!likeAdded) throw `Failed to add like!`;
-  return likeAdded; // NOTE: if this passes, be sure to pass the length of "likes" AFTER insertion/deletion;
+  return likeAdded.length; // NOTE: if this passes, be sure to pass the length of "likes" AFTER insertion/deletion;
 };
 
 export const removeLike = async (userId, playlistId) => {
@@ -98,7 +98,7 @@ export const removeLike = async (userId, playlistId) => {
     { returnDocument: "after" }
   );
   if (!likeRemoved) throw `Failed to remove like!`;
-  return likeRemoved; // NOTE: if this passes, be sure to pass the length of "likes" AFTER insertion/deletion;
+  return likeRemoved.length; // NOTE: if this passes, be sure to pass the length of "likes" AFTER insertion/deletion;
 };
 
 // TODO(?) add a "removeComment" data function?
