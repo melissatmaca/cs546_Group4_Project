@@ -4,6 +4,7 @@ const router = Router();
 
 import * as PG from '../data/playlistGeneration'
 import {get, getAll, getAllPosted, remove, getPlaylistJSON} from '../data/playlists.js' 
+import { playlists } from '../config/mongoCollections.js';
 
 router.route('/').get(async (req, res) => {
 
@@ -140,4 +141,19 @@ try{
       console.log(e);
       return res.status(404).json({error: e});
     }
+  })
+
+  // social feed routes
+  router
+  .route('/feed')
+  .get(async (req, res) => {
+    let feed = undefined;
+    try {
+      feed = socialData.getFeed();
+    } catch(e) {
+      console.log(e);
+      return res.status(400).json({error: e});
+    }
+    // if we get the feed, render socialFeed
+    res.render('/socialFeed', {playlists:feed})
   })

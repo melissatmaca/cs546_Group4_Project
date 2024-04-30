@@ -6,13 +6,14 @@
             <h2>{{this.title}}</h2>
             <p>{{this.caption}}</p>
             <div class="social">
-				{{> like_button }}
+				<button class="like-button" data-like-id="{{this._id}}-like">Like</button>
+                <span data-count-id="{{this._id}}-count">{{this.likes.length}}</span>
             </div>
-            <div class="comments" id="{{this._id}}-comments">
+            <div class="comments" data-comment-id="{{this._id}}-comments">
                 <h3>Comments</h3>
                 {{#each this.comments}}
-                <div class="comment" id="{{this.comment._id}}">
-                    <p>{{this.author}}: {{this.content}}</p>
+                <div class="comment" id="{{this._id}}">
+                    <p>{{this.author}}: {{this.comment}}</p>
                   	<p>{{this.postDate}}</p>
                 </div>
                 {{else}}
@@ -20,11 +21,10 @@
                 {{/each}}
                 <form>
                     <div class="comment-form">
-                      <label for="new-comment"></label>
-                      <textarea id="new-comment">Write a comment...</textarea>
+                      <textarea data-newcomment-id="{{this._id}}-new-comment">Write a comment...</textarea>
                   </div>
                   <div class="comment-button">
-                                          <button type="submit" id="replyButton">Reply</button>
+                    <button type="submit" data-submitcomment-id="{{this._id}}-submit">Submit</button>
                   </div>
                 </form>
             </div>
