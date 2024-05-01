@@ -163,7 +163,7 @@ try{
       return res.status(400).json({error: e});
     }
     // if we get the feed, render socialFeed
-    res.render('/socialFeed', {playlists:feed, script_partial:'like_and_comment_ajax'});
+    res.render('./socialFeed', {playlists:feed, script_partial:'like_and_comment_ajax'});
   })
 
     // AJAX routes for like and comment
