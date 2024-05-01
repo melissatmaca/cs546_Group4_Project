@@ -293,13 +293,19 @@ router.route('/accessToken').get( async (req, res) => {
   });
 
   router.route('/profile').get(async (req, res) => {
+    let numFollowers = undefined;
+    let topTracks = undefined;
+    let topArtists = undefined;
+    let likedPlaylists = undefined;
+    let savedPlaylists = undefined;
+    let genreBreakdown = undefined;
     try{
-      const topArtists = await analytics.getTopArtists(req.session.accessToken, 10);
-      const topTracks = await analytics.getTopArtists(req.session.accessToken, 10);
-      const numFollowers = await analytics.getSpotifyFollowers(req.session.accessToken);
-      const likedPlaylists = await analytics.getLikedPlaylists(req.session.username);
-      const savedPlaylists = await analytics.getSavedPlaylists(req.session.username);
-      const genreBreakdown = await analytics.getGenreBreakdown(req.session.accessToken);
+      topArtists = await analytics.getTopArtists(req.session.user.accessToken, 10);
+      topTracks = await analytics.getTopArtists(req.session.user.accessToken, 10);
+      numFollowers = await analytics.getSpotifyFollowers(req.session.user.accessToken);
+      likedPlaylists = await analytics.getLikedPlaylists(req.session.user.username);
+      savedPlaylists = await analytics.getSavedPlaylists(req.session.user.username);
+      genreBreakdown = await analytics.getGenreBreakdown(req.session.user.accessToken);
     }catch(e){
       return res.status(500).json({error: "Internal Server Error"});
     }
