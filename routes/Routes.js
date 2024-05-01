@@ -10,6 +10,8 @@ import * as helper from '../helpers.js';
 import {createUser, loginUser}from '../data/users.js';
 import {xss} from 'xss';
 
+import * as analytics from '../data/analytics.js';
+
 router.route('/').get(async (req, res) => {
   res.redirect('/login');
   return;
@@ -224,8 +226,72 @@ router.route('/register')
       let loggedUser = undefined;
       try {
         loggedUser = await loginUser(userData.username, userData.password);
+        req.session.user = loggedUser;
       } catch(e) {
         return res.status(400).render('login', {error: "Invalid username and/or password."});
       }
+
+      res.redirect('/authorize');
   })
     
+router.route('/authorize').get(async(req, res) => {
+
+  const state = generateRandomString();
+  const scope = 'user-read-private user-read-email user-top-read';
+
+  res.redirect('https://accounts.spotify.com/authorize?' +
+    querystring.stringify({
+      response_type: 'code',
+      client_id: client_id,
+      scope: scope,
+      redirect_uri: redirect_uri,
+      state: state
+    }));
+
+});
+
+router.route('/accessToken').get( async (req, res) => {
+    const code = req.query.code || null;
+    const state = req.query.state || null;
+  
+    if (state === null) {
+      res.status(400).send('State mismatch error');
+      return;
+    }
+  
+    try {
+        const authOptions = {
+            url: 'https://accounts.spotify.com/api/token',
+            form: {
+              code: code,
+              redirect_uri: redirect_uri,
+              grant_type: 'authorization_code'
+            },
+            headers: {
+              'content-type': 'application/x-www-form-urlencoded',
+              'Authorization': 'Basic ' + (new Buffer.from(client_id + ':' + client_secret).toString('base64'))
+            },
+            json: true
+          };
+  
+        const response = await axios.post(authOptions.url, authOptions.form, {headers: authOptions.headers});
+        const access_token = response.data.access_token;
+        req.session.user.accessToken = access_token;
+        res.redirect('/feed');
+    } catch (error) {
+      console.error('Error exchanging code for access token:', error);
+      res.status(500).send('Internal Server Error');
+    }
+  });
+
+  router.route('/profile').get(async (req, res) => {
+    const topArtists = await analytics.getTopArtists(req.session.accessToken, 10);
+    const topTracks = await analytics.getTopArtists(req.session.accessToken, 10);
+    const numFollowers = await analytics.getSpotifyFollowers(req.session.accessToken);
+    const likedPlaylists = await analytics.getLikedPlaylists(req.session.username);
+    const savedPlaylists = await analytics.getSavedPlaylists(req.session.username);
+    const genreBreakdown = await analytics.getGenreBreakdown(req.session.accessToken)
+
+    return res.render('./profile', {title: "Profile", username: req.session.username, numFollowers: numFollowers, topTrakcs: topTracks, topArtists: topArtists, genres: genreBreakdown})
+
+  });

@@ -115,13 +115,13 @@ export const getSpotifyFollowers = async (accessToken) => {
 };
 
 // Get these from the database
-export const getSavedPlaylists = () => {
+export const getSavedPlaylists = async (username) => {
 
 
 };
 
 // Get these from the database
-export const getLikedPlaylists = () => {
+export const getLikedPlaylists = async (username) => {
 
 
 };
