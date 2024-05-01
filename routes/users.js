@@ -4,6 +4,8 @@ import {Router} from 'express';
 import {xss} from 'xss';
 const router = Router();
 
+router.route('/')
+
 router.route('/register')
 .get(async(req, res) => {
     if (req.session.user){
@@ -42,4 +44,13 @@ router.route('/register')
     }
   });
 
-router.route('/')
+
+  router.route('/login')
+  .get(async(req, res) =>
+
+  
+
+
+)
+
+
