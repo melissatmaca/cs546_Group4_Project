@@ -101,4 +101,4 @@ export const removeLike = async (userId, playlistId) => {
   return likeRemoved.length; // NOTE: if this passes, be sure to pass the length of "likes" AFTER insertion/deletion;
 };
 
-// TODO(?) add a "removeComment" data function?
+
