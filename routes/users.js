@@ -20,7 +20,6 @@ router.route('/register')
         return res.status(400).render('register', {error: "All fields need to be supplied."});
     }
 
-
     try{
       userData.firstName = xss(helper.validString(userData.firstName, "First name"));
       userData.lastName = xss(helper.validName(userData.lastName, "Last name"));
@@ -46,11 +45,26 @@ router.route('/register')
 
 
   router.route('/login')
-  .get(async(req, res) =>
+  .get(async(req, res) => {
+    if (req.session.user){
+      res.redirect('/authorize');
+    } else{
+      res.redirect('/login');
+    };
+})
+.post(async(req, res) => {
+  let userData = req.body;
+    if (!userData || Object.keys(userData).length !== 2){
+        return res.status(400).render('login', {error: "All fields need to be supplied."});
+    }
 
+    try{
+      userData.username = xss(helper.validUsername(userData.username));
+      userData.password = xss(helper.validPassword(userData.password));
+    } catch(e){
+      return res.status(400).render('login', {error: e});
+    }
   
-
-
-)
+})
 
 
