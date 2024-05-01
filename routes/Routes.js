@@ -2,13 +2,13 @@ import {Router} from 'express';
 import * as socialData from "../data/social.js";
 const router = Router();
 
-import * as PG from '../data/playlistGeneration'
+import * as PG from '../data/playlistGeneration.js'
 import {get, getAll, getAllPosted, remove, getPlaylistJSON} from '../data/playlists.js' 
 import { playlists } from '../config/mongoCollections.js';
 
 import * as helper from '../helpers.js';
-import {createUser, loginUser}from '../data/users.js';
-import {xss} from 'xss';
+import {createUser, loginUser} from '../data/users.js';
+import xss from 'xss';
 
 import * as analytics from '../data/analytics.js';
 
@@ -174,16 +174,16 @@ router.route('/register')
   })
   .post(async(req, res) => {
       let userData = req.body;
-      if (!userData || Object.keys(userData).length !== 5){
+      if (!userData){
           return res.status(400).render('register', {error: "All fields need to be supplied."});
       }
 
       try{
-        userData.firstName = xss(helper.validString(userData.firstName, "First name"));
-        userData.lastName = xss(helper.validName(userData.lastName, "Last name"));
-        userData.email = xss(helper.checkEmail(email));
-        userData.username = xss(helper.checkUsername(username));
-        userData.password = xss(helper.checkPassword(password));
+        userData.firstName = xss(helper.checkString(userData.firstName, "First name"));
+        userData.lastName = xss(helper.checkString(userData.lastName, "Last name"));
+        userData.email = xss(helper.checkEmail(userData.email));
+        userData.username = xss(helper.checkUsername(userData.username));
+        userData.password = xss(helper.checkPassword(userData.password));
       } catch(e){
         return res.status(400).render('register', {error: e});
       }
@@ -207,18 +207,18 @@ router.route('/register')
       if (req.session.user){
         res.redirect('/authorize');
       } else{
-        res.redirect('/login');
+        res.render('login');
       };
   })
   .post(async(req, res) => {
       let userData = req.body;
-      if (!userData || Object.keys(userData).length !== 2){
+      if (!userData || Object.keys(userData).length !== 3){
           return res.status(400).render('login', {error: "All fields need to be supplied."});
       };
 
       try{
-        userData.username = xss(helper.validUsername(userData.username));
-        userData.password = xss(helper.validPassword(userData.password));
+        userData.username = xss(helper.checkUsername(userData.username));
+        userData.password = xss(helper.checkPassword(userData.password));
       } catch(e){
         return res.status(400).render('login', {error: e});
       }
@@ -295,3 +295,5 @@ router.route('/accessToken').get( async (req, res) => {
     return res.render('./profile', {title: "Profile", username: req.session.username, numFollowers: numFollowers, topTrakcs: topTracks, topArtists: topArtists, genres: genreBreakdown})
 
   });
+
+  export default router;

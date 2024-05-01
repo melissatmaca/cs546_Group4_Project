@@ -1,6 +1,10 @@
 import express from 'express';
+import exphbs from 'express-handlebars';
+import session from 'express-session';
 import dotenv from 'dotenv';
-import querystring from 'querystring'
+import configRoutes from './routes/index.js';
+
+import querystring from 'querystring';
 import { generateRandomString } from './helpers.js';
 
 dotenv.config();
@@ -42,6 +46,7 @@ app.use('/', (req, res, next) =>{
   }
 });
 
+configRoutes(app);
 
 app.listen(3000, () =>{
     console.log("Server is running!");
