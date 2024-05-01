@@ -4,14 +4,14 @@ import * as helper from '../validation.js';
 
 
 export const createUser = async(firstName, lastName, email, username, password) => {
-    if(!firstName, !lastName, !email, !username, !password) throw `Please complete al fields.`;
+    if(!firstName, !lastName, !email, !username, !password) throw `Please complete all fields.`;
     firstName = helper.checkString(firstName, "First name");
     lastName = helper.checkString(lastName, "Last name");
     email = helper.checkEmail(email);
     username = helper.checkUsername(username);
     password = helper.checkPassword(password);
 
-    let hashedPassword = bcrypt.hash(password, 16);
+    let hashedPassword = await bcrypt.hash(password, 11);
 
     const userCollection = await users();
 
