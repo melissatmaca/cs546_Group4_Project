@@ -11,13 +11,11 @@ import {createUser, loginUser}from '../data/users.js';
 import {xss} from 'xss';
 
 router.route('/').get(async (req, res) => {
-
   res.redirect('/login');
   return;
 });
 
-  router
-  .route('/generator')
+router.route('/generator')
   .get(async (req, res) => {
     res.render('generator', {title: "generator"});
   })
