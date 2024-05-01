@@ -4,7 +4,9 @@ import {Router} from 'express';
 import {xss} from 'xss';
 const router = Router();
 
-router.route('/')
+router.route('/').get(async (req, res) => {
+  return res.json({error: 'You cannot be here.'});
+});
 
 router.route('/register')
 .get(async(req, res) => {
