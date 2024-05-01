@@ -130,7 +130,13 @@ export const getRecomendations = async (genres, mood, limit, accessToken, title,
     if (!insertInfo.acknowledged || !insertInfo.insertedId)
     throw 'Could not add playlist';
 
-
+    const usersCollection = await c.users();
+    const user = await usersCollection.findOneAndUpdate(
+        { _id: new ObjectId(req.session.user.id) },
+        { $push: { createdPlaylists: insertInfo.insertedId.toString() } },
+        { returnOriginal: false } 
+    );
+    
     return insertInfo.insertedId.toString();
 
 }
