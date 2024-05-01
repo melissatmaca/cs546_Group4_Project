@@ -163,7 +163,7 @@ try{
       return res.status(400).json({error: e});
     }
     // if we get the feed, render socialFeed
-    res.render('/socialFeed', {playlists:feed, script_partial:'like_and_comment_ajax'});
+    res.render('socialFeed', {playlists:feed, script_partial:'like_and_comment_ajax'});
   })
 
 router.route('/register')
@@ -171,7 +171,7 @@ router.route('/register')
       if (req.session.user){
           res.redirect('/authorize');
         } else{
-          res.render('register');
+          res.render('register', {title: "Register"});
         }
   })
   .post(async(req, res) => {
@@ -209,7 +209,7 @@ router.route('/register')
       if (req.session.user){
         res.redirect('/authorize');
       } else{
-        res.render('login');
+        res.render('login', {title: "Login"});
       };
   })
   .post(async(req, res) => {
