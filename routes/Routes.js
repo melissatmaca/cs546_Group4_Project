@@ -4,7 +4,7 @@ const router = Router();
 
 import * as PG from '../data/playlistGeneration.js'
 import {get, getAll, getAllPosted, remove, getPlaylistJSON} from '../data/playlists.js' 
-import { playlists } from '../config/mongoCollections.js';
+import { playlists, users } from '../config/mongoCollections.js';
 
 import * as helper from '../helpers.js';
 import {createUser, loginUser} from '../data/users.js';
@@ -164,6 +164,84 @@ try{
     }
     // if we get the feed, render socialFeed
     res.render('/socialFeed', {playlists:feed, script_partial:'like_and_comment_ajax'});
+  })
+
+    // AJAX routes for like and comment
+  router
+  .route('/api/playlist/:playlistId/like')
+  .post(async (req, res) => {
+    // get all the playlist info
+    let playlistId = undefined;
+    let playlist = undefined;
+    let playlistsCollection = undefined;
+    try {
+      playlistId = req.params.playlistId;
+      playlistId = helper.checkID(playlistId, "PlaylistID");
+      playlistsCollection = await playlists();
+      if (!playlistsCollection) throw `Database not found`;
+      playlist = await playlistsCollection.findOne({
+        _id: new ObjectId(playlistId),
+      });
+      if (!playlist) throw `Could not find playlist with the id: ${playlistId}`;
+    } catch(e) {
+      return res.status(400).json({error: e});
+    }
+
+    // check whether to add or remove like
+    let likeResult = undefined;
+    // remove like
+    if (playlist.likes.includes(req.session.user._id)) {
+      try {
+        likeResult = await socialData.removeLike(req.session.user._id, playlistId);
+      } catch(e) {
+        return res.status(400).json({error: e});
+      }
+    } else {
+      // add like
+      try { 
+        likeResult = await socialData.addLike(req.session.user._id, playlistId);
+      } catch(e) {
+        return res.status(400).json({error: e});
+      }
+    }
+    res.json({ likes: likeResult });
+  })
+
+  router
+  .route('/api/playlist/:playlistId/comment')
+  .post(async (req, res) => {
+    // get all the playlist info
+    let playlistId = undefined;
+    let playlist = undefined;
+    let playlistsCollection = undefined;
+    try {
+      playlistId = req.params.playlistId;
+      playlistId = helper.checkID(playlistId, "PlaylistID");
+      playlistsCollection = await playlists();
+      if (!playlistsCollection) throw `Database not found`;
+      playlist = await playlistsCollection.findOne({
+        _id: new ObjectId(playlistId),
+      });
+      if (!playlist) throw `Could not find playlist with the id: ${playlistId}`;
+    } catch(e) {
+      return res.status(400).json({error: e});
+    }
+    // fetch the comment
+    let comment = undefined;
+    try {
+      comment = req.body.comment;
+      comment = helper.checkComment(comment, "Comment");
+    } catch(e) {
+      return res.status(400).json({error: e});
+    }
+    // add the comment
+    let commentAdded = undefined;
+    try {
+      commentAdded = await socialData.addComment(comment, req.session.user._id, playlistId);
+    } catch(e) {
+      return res.status(400).json({error: e});
+    }
+    res.json({comments:commentAdded});
   })
 
 router.route('/register')

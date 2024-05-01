@@ -54,7 +54,7 @@ export const addComment = async (comment, userId, playlistId) => {
     { returnDocument: "after" }
   );
   if (!updated) throw `Failed to add comment!`;
-  return updated;
+  return commentObj;
 };
 
 export const addLike = async (userId, playlistId) => {
@@ -90,7 +90,7 @@ export const addLike = async (userId, playlistId) => {
     { returnDocument: "after" }
   );
   if (!playlistAdded) throw `Failed to add the like to the user!`;
-  return likeAdded; // NOTE: if this passes, pass the new "likes"
+  return playlistAdded.likes; // NOTE: if this passes, pass the new "likes"
 };
 
 export const removeLike = async (userId, playlistId) => {
@@ -127,5 +127,5 @@ export const removeLike = async (userId, playlistId) => {
     { returnDocument: "after" }
   );
   if (!playlistRemoved) throw `Failed to remove the like from the user!`;
-  return likeRemoved.likes; // NOTE: if this passes, pass the new "likes"
+  return playlistRemoved.likes; // NOTE: if this passes, pass the new "likes"
 };
