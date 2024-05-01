@@ -69,20 +69,35 @@ export const addLike = async (userId, playlistId) => {
   if (!playlist) throw `Could not find playlist with the id: ${playlistId}`;
   if (playlist.posted !== true)
     throw `The playlist with the id ${playlistId} is not posted`;
+  // get and check the user collection
+  const usersCollection = await c.users();
+  if (!usersCollection) throw `Database not found`;
+  let user = await usersCollection.findOne({
+    _id: new ObjectId(userId),
+  });
+  if (!user) throw `Could not find user with the id: ${userId}`;
   // push userId to the playlists "likes" array parameter
   let likeAdded = await playlistsCollection.findOneAndUpdate(
     { _id: new ObjectId(playlistId) },
     { $push: { likes: userId } },
     { returnDocument: "after" }
   );
-  if (!likeAdded) throw `Failed to add like!`;
-  return likeAdded.length; // NOTE: if this passes, be sure to pass the length of "likes" AFTER insertion/deletion;
+  if (!likeAdded) throw `Failed to add the like to the playlist!`;
+  // add the like from the user's "likedPlaylists"
+  let playlistAdded = await usersCollection.findOneAndUpdate(
+    { _id: new ObjectId(userId) },
+    { $push: { likedPlaylists: playlistId } },
+    { returnDocument: "after" }
+  );
+  if (!playlistAdded) throw `Failed to add the like to the user!`;
+  return likeAdded; // NOTE: if this passes, pass the new "likes"
 };
 
 export const removeLike = async (userId, playlistId) => {
   // input validation for both ids
   userId = helper.checkID(userId, "UserID");
   playlistId = helper.checkID(playlistId, "PlaylistID");
+  // get and check the playlist collection
   const playlistsCollection = await c.playlists();
   if (!playlistsCollection) throw `Database not found`;
   let playlist = await playlistsCollection.findOne({
@@ -91,14 +106,26 @@ export const removeLike = async (userId, playlistId) => {
   if (!playlist) throw `Could not find playlist with the id: ${playlistId}`;
   if (playlist.posted !== true)
     throw `The playlist with the id ${playlistId} is not posted`;
-  // push userId to the playlists "likes" array parameter
+  // get and check the user collection
+  const usersCollection = await c.users();
+  if (!usersCollection) throw `Database not found`;
+  let user = await usersCollection.findOne({
+    _id: new ObjectId(userId),
+  });
+  if (!user) throw `Could not find user with the id: ${userId}`;
+  // pull userId from the playlists "likes" array parameter
   let likeRemoved = await playlistsCollection.findOneAndUpdate(
     { _id: new ObjectId(playlistId) },
     { $pull: { likes: userId } },
     { returnDocument: "after" }
   );
-  if (!likeRemoved) throw `Failed to remove like!`;
-  return likeRemoved.length; // NOTE: if this passes, be sure to pass the length of "likes" AFTER insertion/deletion;
+  if (!likeRemoved) throw `Failed to remove the like from the playlist!`;
+  // remove the like from the user's "likedPlaylists"
+  let playlistRemoved = await usersCollection.findOneAndUpdate(
+    { _id: new ObjectId(userId) },
+    { $pull: { likedPlaylists: playlistId } },
+    { returnDocument: "after" }
+  );
+  if (!playlistRemoved) throw `Failed to remove the like from the user!`;
+  return likeRemoved.likes; // NOTE: if this passes, pass the new "likes"
 };
-
-
