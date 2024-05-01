@@ -101,7 +101,7 @@ try{
       return res.status(400).json({error: e});
     }
     //try getting the post by ID
-    let playlist, playlistData, playlistTitle, ownerName, caption, isOwner;
+    let playlist, playlistData, playlistTitle, ownerName, caption, isOwner, id;
     try {
       playlist = await get(req.params.id.trim());
     } catch (e) {
@@ -113,7 +113,8 @@ try{
       playlistTitle = playlist.title;
       ownerName = playlist.userName;
       caption = playlist.caption;
-      isOwner = (req.session.user.id == playlist.userID)
+      isOwner = (req.session.user.id == playlist.userID);
+      id = rq.session.user.id;
     } catch(e){
       return res.status(404).json({error: e});
     }
@@ -122,7 +123,8 @@ try{
       playlistTitle,
       ownerName,
       caption,
-      isOwner 
+      isOwner,
+      id
   });
   })
   .delete(async (req, res) => {
