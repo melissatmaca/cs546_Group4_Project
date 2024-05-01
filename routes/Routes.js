@@ -294,19 +294,24 @@ router.route('/accessToken').get( async (req, res) => {
   });
 
   router.route('/profile').get(async (req, res) => {
-    console.log(req.session.user)
-    // try{
-      const topArtists = await analytics.getTopArtists(req.session.user.accessToken, 10);
-      const topTracks = await analytics.getTopArtists(req.session.user.accessToken, 10);
-      const numFollowers = await analytics.getSpotifyFollowers(req.session.user.accessToken);
-      const likedPlaylists = await analytics.getLikedPlaylists(req.session.user.username);
-      const savedPlaylists = await analytics.getSavedPlaylists(req.session.user.username);
-      const genreBreakdown = await analytics.getGenreBreakdown(req.session.user.accessToken);
-    // }catch(e){
-    //   return res.status(500).json({error: "Internal Server Error"});
-    // }
+    let numFollowers = undefined;
+    let topTracks = undefined;
+    let topArtists = undefined;
+    let likedPlaylists = undefined;
+    let savedPlaylists = undefined;
+    let genreBreakdown = undefined;
+    try{
+      topArtists = await analytics.getTopArtists(req.session.user.accessToken, 10);
+      topTracks = await analytics.getTopArtists(req.session.user.accessToken, 10);
+      numFollowers = await analytics.getSpotifyFollowers(req.session.user.accessToken);
+      likedPlaylists = await analytics.getLikedPlaylists(req.session.user.username);
+      savedPlaylists = await analytics.getSavedPlaylists(req.session.user.username);
+      genreBreakdown = await analytics.getGenreBreakdown(req.session.user.accessToken);
+    }catch(e){
+      return res.status(500).json({error: "Internal Server Error"});
+    }
 
-    return res.render('./profile', {title: "Profile", username: req.session.user.userName, numFollowers: numFollowers, topTracks: topTracks, 
+    return res.render('./profile', {title: "Profile", username: req.session.user.username, numFollowers: numFollowers, topTracks: topTracks, 
                       topArtists: topArtists, genres: genreBreakdown, likedPlaylists: likedPlaylists, savedPlaylists: savedPlaylists});
 
   });
