@@ -2,7 +2,7 @@
 <p>Owner: {{ownerName}}</p>
 <p>{{caption}}</p>
 {{#if isOwner}}
-    <form id="deleteForm" action="/playlist" method="POST">
+    <form id="deleteForm" action="/playlist" method="DELETE">
         <button type="submit">Delete Playlist</button>
     </form>
 {{/if}}
