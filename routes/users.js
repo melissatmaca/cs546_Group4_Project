@@ -4,7 +4,9 @@ import {Router} from 'express';
 import {xss} from 'xss';
 const router = Router();
 
-router.route('/')
+router.route('/').get(async (req, res) => {
+  return res.json({error: 'You cannot be here.'});
+});
 
 router.route('/register')
 .get(async(req, res) => {
@@ -53,10 +55,10 @@ router.route('/register')
     };
 })
 .post(async(req, res) => {
-  let userData = req.body;
+    let userData = req.body;
     if (!userData || Object.keys(userData).length !== 2){
         return res.status(400).render('login', {error: "All fields need to be supplied."});
-    }
+    };
 
     try{
       userData.username = xss(helper.validUsername(userData.username));
@@ -64,7 +66,13 @@ router.route('/register')
     } catch(e){
       return res.status(400).render('login', {error: e});
     }
-  
+
+    let loggedUser = undefined;
+    try {
+      loggedUser = await loginUser(userData.username, userData.password);
+    } catch(e) {
+      return res.status(400).render('login', {error: "Invalid username and/or password."});
+    }
 })
 
 
