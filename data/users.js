@@ -18,6 +18,9 @@ export const createUser = async(firstName, lastName, email, username, password) 
     const usernameExists = await userCollection.findOne({username: username.toLowerCase()});
     if(usernameExists) throw `The username already exists.`;
 
+    const emailExists = await userCollection.findOne({username: email.toLowerCase()});
+    if(emailExists) throw `The email already exists.`;
+
     let newUser = {
         firstName : firstName,
         lastName : lastName, 
