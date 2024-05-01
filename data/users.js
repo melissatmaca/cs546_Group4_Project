@@ -32,7 +32,7 @@ export const createUser = async(firstName, lastName, email, username, password) 
     const newUserInfo = await userCollection.insertOne(newUser);
     if(!newUserInfo.insertedId || !newUserInfo.acknowledged) throw `Account cannot be created.`;
 
-    return {signupCompleted: true};
+    return newUserInfo;
 };
 
 export const loginUser = async(username, password) => {
@@ -50,9 +50,9 @@ export const loginUser = async(username, password) => {
     let passwordMatches = await bcrypt.compare(password, usernameExists.password);
     if(!passwordMatches) throw `Either the username or password is invalid`;
 
-    let userInf = await userCollection.find({username: username.toLowerCase()});
+    let userInf = await userCollection.find({username: username.toLowerCase()}).project({password: 0}).toArray()
 
     if(!userInf) throw `Account cannot be located.`;
 
-    return {loginCompleted:true};
+    return userInf[0];
 };
