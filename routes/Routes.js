@@ -4,7 +4,7 @@ const router = Router();
 
 import * as PG from '../data/playlistGeneration.js'
 import {get, getAll, getAllPosted, remove, getPlaylistJSON} from '../data/playlists.js' 
-import { playlists } from '../config/mongoCollections.js';
+import { playlists, users } from '../config/mongoCollections.js';
 
 import * as helper from '../helpers.js';
 import {createUser, loginUser} from '../data/users.js';
@@ -163,6 +163,7 @@ try{
       return res.status(400).json({error: e});
     }
     // if we get the feed, render socialFeed
+
     res.render('./socialFeed', {playlists:feed, script_partial:'like_and_comment_ajax'});
   })
 
@@ -171,7 +172,7 @@ router.route('/register')
       if (req.session.user){
           res.redirect('/authorize');
         } else{
-          res.render('register');
+          res.render('register', {title: "Register"});
         }
   })
   .post(async(req, res) => {
@@ -209,7 +210,7 @@ router.route('/register')
       if (req.session.user){
         res.redirect('/authorize');
       } else{
-        res.render('login');
+        res.render('login', {title: "Login"});
       };
   })
   .post(async(req, res) => {

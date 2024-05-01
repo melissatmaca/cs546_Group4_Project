@@ -18,18 +18,21 @@ export const createUser = async(firstName, lastName, email, username, password) 
     const usernameExists = await userCollection.findOne({username: username.toLowerCase()});
     if(usernameExists) throw `The username already exists.`;
 
+    const emailExists = await userCollection.findOne({username: email.toLowerCase()});
+    if(emailExists) throw `The email already exists.`;
+
     let newUser = {
         firstName : firstName,
         lastName : lastName, 
-        email : email, 
-        username : username, 
+        email : email.toLowerCase(), 
+        username : username.toLowerCase(), 
         password : hashedPassword
     }
 
     const newUserInfo = await userCollection.insertOne(newUser);
     if(!newUserInfo.insertedId || !newUserInfo.acknowledged) throw `Account cannot be created.`;
 
-    return {signupCompleted: true};
+    return newUserInfo;
 };
 
 export const loginUser = async(username, password) => {
@@ -47,9 +50,9 @@ export const loginUser = async(username, password) => {
     let passwordMatches = await bcrypt.compare(password, usernameExists.password);
     if(!passwordMatches) throw `Either the username or password is invalid`;
 
-    let userInf = await userCollection.find({username: username.toLowerCase()});
+    let userInf = await userCollection.find({username: username.toLowerCase()}).project({password: 0}).toArray()
 
     if(!userInf) throw `Account cannot be located.`;
 
-    return {loginCompleted:true};
+    return userInf[0];
 };
