@@ -29,8 +29,8 @@ export const getTopArtists = async (accessToken, limit) =>{
 };
 
 export const getTopTracks = async (accessToken, limit) =>{
-    if(accessToken === undefeind) throw "Error: accessToken is undefined.";
-    if(limit === undefeind) throw "Error: limit is undefined.";
+    if(accessToken === undefined) throw "Error: accessToken is undefined.";
+    if(limit === undefined) throw "Error: limit is undefined.";
     if(typeof accessToken !== 'string') throw "Error: accessToken is not a string.";
     if(typeof limit !== 'number') throw "Error: accessToken is not a number.";
 
