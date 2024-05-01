@@ -163,7 +163,7 @@ try{
       return res.status(400).json({error: e});
     }
     // if we get the feed, render socialFeed
-    res.render('/socialFeed', {playlists:feed, script_partial:'like_and_comment_ajax'});
+    res.render('./socialFeed', {playlists:feed, script_partial:'like_and_comment_ajax'});
   })
 
 router.route('/register')
@@ -293,18 +293,19 @@ router.route('/accessToken').get( async (req, res) => {
   });
 
   router.route('/profile').get(async (req, res) => {
-    try{
-      const topArtists = await analytics.getTopArtists(req.session.accessToken, 10);
-      const topTracks = await analytics.getTopArtists(req.session.accessToken, 10);
-      const numFollowers = await analytics.getSpotifyFollowers(req.session.accessToken);
-      const likedPlaylists = await analytics.getLikedPlaylists(req.session.username);
-      const savedPlaylists = await analytics.getSavedPlaylists(req.session.username);
-      const genreBreakdown = await analytics.getGenreBreakdown(req.session.accessToken);
-    }catch(e){
-      return res.status(500).json({error: "Internal Server Error"});
-    }
+    console.log(req.session.user)
+    // try{
+      const topArtists = await analytics.getTopArtists(req.session.user.accessToken, 10);
+      const topTracks = await analytics.getTopArtists(req.session.user.accessToken, 10);
+      const numFollowers = await analytics.getSpotifyFollowers(req.session.user.accessToken);
+      const likedPlaylists = await analytics.getLikedPlaylists(req.session.user.username);
+      const savedPlaylists = await analytics.getSavedPlaylists(req.session.user.username);
+      const genreBreakdown = await analytics.getGenreBreakdown(req.session.user.accessToken);
+    // }catch(e){
+    //   return res.status(500).json({error: "Internal Server Error"});
+    // }
 
-    return res.render('./profile', {title: "Profile", username: req.session.username, numFollowers: numFollowers, topTrakcs: topTracks, 
+    return res.render('./profile', {title: "Profile", username: req.session.user.userName, numFollowers: numFollowers, topTracks: topTracks, 
                       topArtists: topArtists, genres: genreBreakdown, likedPlaylists: likedPlaylists, savedPlaylists: savedPlaylists});
 
   });
