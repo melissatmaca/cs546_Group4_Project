@@ -42,7 +42,7 @@ export const loginUser = async(username, password) => {
     let userCollection = await users();
 
     const usernameExists = await userCollection.findOne({username: username.toLowerCase()});
-    if(!usernameExists) throw `Either the username or password is inhelper.`;
+    if(!usernameExists) throw `Either the username or password is invalid.`;
 
     let passwordMatches = await bcrypt.compare(password, usernameExists.password);
     if(!passwordMatches) throw `Either the username or password is invalid`;
