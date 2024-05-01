@@ -11,6 +11,8 @@ import {createUser, loginUser} from '../data/users.js';
 import xss from 'xss';
 
 import * as analytics from '../data/analytics.js';
+import querystring from 'querystring';
+import axios from 'axios';
 
 router.route('/').get(async (req, res) => {
   res.redirect('/login');
@@ -236,8 +238,11 @@ router.route('/register')
     
 router.route('/authorize').get(async(req, res) => {
 
-  const state = generateRandomString();
+  const state = helper.generateRandomString();
   const scope = 'user-read-private user-read-email user-top-read';
+  const client_id = process.env.CLIENT_ID;
+  const redirect_uri = 'http://localhost:3000/accessToken';
+  const client_secret = process.env.CLIENT_SECRET;
 
   res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
@@ -253,6 +258,9 @@ router.route('/authorize').get(async(req, res) => {
 router.route('/accessToken').get( async (req, res) => {
     const code = req.query.code || null;
     const state = req.query.state || null;
+    const client_id = process.env.CLIENT_ID;
+    const redirect_uri = 'http://localhost:3000/accessToken';
+    const client_secret = process.env.CLIENT_SECRET;
   
     if (state === null) {
       res.status(400).send('State mismatch error');
