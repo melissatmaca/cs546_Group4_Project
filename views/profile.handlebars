@@ -4,10 +4,6 @@
 
     <div id="dashboardContainer">
         
-        <div id="dashboardHeader">
-            <h2>Spotify Account: {{spotifyUsername}}</h2>
-        </div>
-
         <div id="dashboardCardContainer">
             <div id="numFollowersCard" class="analyticsCard">
                 <h2 class="analyticsCardTitle">Number of Followers:</h2>
@@ -34,6 +30,9 @@
 
             <div id="genreCard" class="analyticsCard">
                 <h2 class="analyticsCardTitle">Genre Diversity:</h2>
+                {{#each genres}}
+                    <li class="topItens">{{this}}</li>
+                {{/each}}
             </div>
         </div>
         
