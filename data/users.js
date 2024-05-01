@@ -24,8 +24,8 @@ export const createUser = async(firstName, lastName, email, username, password) 
     let newUser = {
         firstName : firstName,
         lastName : lastName, 
-        email : email, 
-        username : username, 
+        email : email.toLowerCase(), 
+        username : username.toLowerCase(), 
         password : hashedPassword
     }
 
