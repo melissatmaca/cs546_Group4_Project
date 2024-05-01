@@ -1,7 +1,8 @@
 import express from 'express';
+import exphbs from 'express-handlebars';
+import session from 'express-session';
 import dotenv from 'dotenv';
-import querystring from 'querystring'
-import { generateRandomString } from './helpers.js';
+import configRoutes from './routes/index.js';
 
 dotenv.config();
 let app = express();
@@ -13,9 +14,7 @@ app.use(express.urlencoded({extended: true}));
 app.engine('handlebars', exphbs.engine({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
-const client_id = process.env.CLIENT_ID;
-const redirect_uri = 'http://localhost:3000/accessToken';
-const client_secret = process.env.CLIENT_SECRET;
+
 
 app.use(
   session({
@@ -42,6 +41,7 @@ app.use('/', (req, res, next) =>{
   }
 });
 
+configRoutes(app);
 
 app.listen(3000, () =>{
     console.log("Server is running!");

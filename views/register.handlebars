@@ -1,0 +1,61 @@
+<div class="PasswordReq">
+    <p>Your password must include:</p>
+<ol>
+    <li>At least one uppercase letter</li>
+    <li>At least one lowercase letter</li>
+    <li>At least one special character</li>
+    <li>At least one number</li>
+</ol>
+</div>
+
+{{#if error}}
+<div class="errorDiv">
+    {{{error}}}
+</div>
+{{/if}}
+<form id="register-form" name="register-form" action="/register" method="POST">
+       <div>
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName" name="firstName">
+            <p id="fNameError"></p>
+        </div>
+
+        <div>
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName" name="lastName">
+            <p id="lNameError"></p>
+        </div>
+
+         <div>
+            <label for="email">Email:</label>
+            <input type="text" id="email" name="email">
+            <p id="emailErr"></p>
+        </div>
+
+        <div>
+             <label for="username">Username:</label>
+             <input type="text" id="username" name="username">
+             <p id="unameError"></p>
+        </div>
+
+        <div>
+             <label for="password">Password:</label>
+             <input type="password" id="password" name="password" >
+             <p id="pswdError"></p>
+        </div>
+
+        <div>
+            <label for="confirmPassword">Confirm Password:</label>
+            <input type="password" id="confirmPassword" name="confirmPassword">
+            <p id="pswdNotConfirmed"></p>
+        </div>
+
+
+        <div class="regButton">
+             <button type="submit" id="submitButton" name="submitButton">Submit</button>
+        </div>
+    </form>
+
+    <div class="loginCont">
+        <a href="/login">Already have an account? Click here to log-in</a>
+    </div>
