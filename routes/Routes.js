@@ -231,7 +231,7 @@ router.route('/register')
         return res.status(400).render('login', {error: "Invalid username and/or password."});
       }
 
-      res.redirect('/authorize');
+      return res.redirect('/authorize');
   })
     
 router.route('/authorize').get(async(req, res) => {
@@ -285,14 +285,19 @@ router.route('/accessToken').get( async (req, res) => {
   });
 
   router.route('/profile').get(async (req, res) => {
-    const topArtists = await analytics.getTopArtists(req.session.accessToken, 10);
-    const topTracks = await analytics.getTopArtists(req.session.accessToken, 10);
-    const numFollowers = await analytics.getSpotifyFollowers(req.session.accessToken);
-    const likedPlaylists = await analytics.getLikedPlaylists(req.session.username);
-    const savedPlaylists = await analytics.getSavedPlaylists(req.session.username);
-    const genreBreakdown = await analytics.getGenreBreakdown(req.session.accessToken)
+    try{
+      const topArtists = await analytics.getTopArtists(req.session.accessToken, 10);
+      const topTracks = await analytics.getTopArtists(req.session.accessToken, 10);
+      const numFollowers = await analytics.getSpotifyFollowers(req.session.accessToken);
+      const likedPlaylists = await analytics.getLikedPlaylists(req.session.username);
+      const savedPlaylists = await analytics.getSavedPlaylists(req.session.username);
+      const genreBreakdown = await analytics.getGenreBreakdown(req.session.accessToken);
+    }catch(e){
+      return res.status(500).json({error: "Internal Server Error"});
+    }
 
-    return res.render('./profile', {title: "Profile", username: req.session.username, numFollowers: numFollowers, topTrakcs: topTracks, topArtists: topArtists, genres: genreBreakdown})
+    return res.render('./profile', {title: "Profile", username: req.session.username, numFollowers: numFollowers, topTrakcs: topTracks, 
+                      topArtists: topArtists, genres: genreBreakdown, likedPlaylists: likedPlaylists, savedPlaylists: savedPlaylists});
 
   });
 
