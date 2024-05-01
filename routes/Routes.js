@@ -4,7 +4,7 @@ const router = Router();
 
 import * as PG from '../data/playlistGeneration.js'
 import {get, getAll, getAllPosted, remove, getPlaylistJSON} from '../data/playlists.js' 
-import { playlists } from '../config/mongoCollections.js';
+import { playlists, users } from '../config/mongoCollections.js';
 
 import * as helper from '../helpers.js';
 import {createUser, loginUser} from '../data/users.js';
