@@ -1,0 +1,26 @@
+ <form id="login-form" method="POST" action="/login">
+        <div id="loginUname">
+            <label for="username">Username:</label>
+            <br>
+            <input type="text" id="username" name="username">
+            <p id="unameError"></p>
+        </div>
+        
+        <div id="loginPass">
+            <label for="password">Password:</label>
+            <br>
+            <input type="password" id="password" name="password">
+            <p id="pswdError"></p>
+        </div>
+        {{#if error}}
+        <p id="invalidCred">{{error}}</p>
+        {{/if}}
+        
+        <div class="loginButton">
+            <button type="submit" name="submitButton" id="submitButton">Login</button>
+        </div>
+    </form>
+    <div class="regCont">
+        <p><a href="/register">Click here to register!</a></p>
+    </div>
+    
