@@ -1,7 +1,7 @@
 import axios from 'axios';
 import * as c from "../config/mongoCollections.js";
 
-export const getRecomendations = async (genres, mood, limit, accessToken, title, caption) =>{
+export const getRecomendations = async (genres, mood, limit, accessToken, title, caption, id, username) =>{
     if(typeof limit != 'number'){throw 'Limit Not Number'}
     if(limit < 1){throw 'Limit too small'}
     if(limit >100){throw 'Limit must be maximum 100 songs'}
@@ -26,18 +26,17 @@ export const getRecomendations = async (genres, mood, limit, accessToken, title,
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             }
-        });
-        let tracksL = [];
-        for(let track of response.data.items){
-            tracksL.push(track.id);
-    }
-
-
+    });
+    let tracksL = [];
+    let seed_artists, seed_genres;
+    for(let track of response.data.items){
+        tracksL.push(track.id);
+    } 
     if(artists.length == 1){
         seed_artists = artists[0];
     }
     else{
-        seed_artists = artists[0]+","+artists[1];
+        seed_artists = artists.slice(0, 2).join(",");
     }
     if(genres[1] == "noGenre"){
         seed_genres = genres[0];
@@ -45,7 +44,6 @@ export const getRecomendations = async (genres, mood, limit, accessToken, title,
     else{
         seed_genres = genres[0]+','+genres[1];
     }
-
     let target_acousticness, target_danceability, target_energy, target_instrumentalness, target_liveness, target_speechiness, target_valence;
     //Values subject to testing
     if (mood === "energetic") {
@@ -108,34 +106,35 @@ export const getRecomendations = async (genres, mood, limit, accessToken, title,
         'Authorization': `Bearer ${accessToken}`
     }
     });
-
     let ret = [];
     for(let i = 0; i<limit; i++){
         ret.push(response.data.tracks[i].id);
     }
     const playlistCollection = await c.playlists();
-
     let newPlaylist = {
-        userID: req.session.user.id,
-        userName: req.session.user.username,
+        userID: id,
+        userName: username,
         title: title,
         caption: caption,
         posted: false,
-        tracks: tracksL,
+        tracks: ret,
         likes: [],
         comments: []
     }
-
+    
     const insertInfo = await playlistCollection.insertOne(newPlaylist);
     if (!insertInfo.acknowledged || !insertInfo.insertedId)
     throw 'Could not add playlist';
 
+   
     const usersCollection = await c.users();
+    console.log('here');
     const user = await usersCollection.findOneAndUpdate(
-        { _id: new ObjectId(req.session.user.id) },
+        { username:  username},
         { $push: { createdPlaylists: insertInfo.insertedId.toString() } },
         { returnOriginal: false } 
     );
 
+    console.log('here');
     return insertInfo.insertedId.toString();
 }

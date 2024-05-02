@@ -26,7 +26,9 @@ export const createUser = async(firstName, lastName, email, username, password) 
         lastName : lastName, 
         email : email.toLowerCase(), 
         username : username.toLowerCase(), 
-        password : hashedPassword
+        password : hashedPassword,
+        createdPlaylists : [],
+        likedPlaylists : []
     }
 
     const newUserInfo = await userCollection.insertOne(newUser);

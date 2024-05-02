@@ -25,7 +25,6 @@ router.route('/generator')
   })
   .post(async (req, res) => {
     //code here for POST
-
     let title = req.body.title.trim();
     let caption = req.body.caption.trim();
     let limit = req.body.limit;
@@ -59,9 +58,10 @@ router.route('/generator')
 try{
     if(typeof genres[0] != 'string'){throw 'genres must be a string'}
     if(typeof genres[1] != 'string'){throw 'genres must be a string'}
-    if(!genreList.includes(genre[0]) ||!genreList.includes([1])){throw 'genres must be one of the given options'}
+    if(!genreList.includes(genres[0]) ||!genreList.includes(genres[1])){throw 'genres must be one of the given options'}
     if(typeof mood != 'string'){throw 'mood must be a string'}
     if(mood != "energetic" && mood != "calm" && mood != "sad" && mood != "happy" && mood != "no mood" ){throw 'mood must be one of the given options'}
+    limit = parseInt(limit);
     if(typeof limit != 'number'){throw 'Limit Not Number'}
     if(limit < 1){throw 'Limit too small'}
     if(limit >100){throw 'Limit must be maximum 100 songs'}
@@ -72,19 +72,22 @@ try{
     if(caption.length < 1){throw 'Caption too short'}
     if(caption.length >255){throw 'Caption must be maximum 255 characters'}
 }catch(Error){
-    res.status(400).render("generator", ({title: "generator", Error: Error}))
+
+    return res.status(400).render("generator", ({title: "generator", Error: Error}))
 }
 
-    try{
-    let genRet = await PG.getRecomendations(genres,mood,limit,accessToken,title,caption);
+try{
+    let genRet = await PG.getRecomendations(genres, mood, limit, accessToken, title, caption, req.session.user.id, req.session.user.username);
 
-    if(genRet){
-    res.redirect(`/playlists/${genRet}`);
+    if (genRet) {
+      res.redirect(`/playlist/${genRet}`);
+    } else {
+      res.render('generator', { title: "generator", Error: 'Failed to generate playlist' });
     }
-  }catch(e){
-    res.render('generator', {title:"generator", Error: e})
+  } catch (error) {
+    return res.status(400).render("generator", { title: "generator", Error: error });
   }
-  });  
+});
 
 
 
@@ -229,6 +232,7 @@ router.route('/register')
       try {
         loggedUser = await loginUser(userData.username, userData.password);
         req.session.user = loggedUser;
+        req.session.user.id = loggedUser._id.toString();
       } catch(e) {
         return res.status(400).render('login', {error: "Invalid username and/or password."});
       }
