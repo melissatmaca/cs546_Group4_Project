@@ -157,7 +157,7 @@ try{
     }
   });
 
-  router.post('saveplaylist',async (req,res) => {
+  router.post('/saveplaylist',async (req,res) => {
     let accessToken = req.body.accessToken
     let userID = req.body.userID
     let playlistName = req.body.name
