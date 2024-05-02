@@ -1,5 +1,6 @@
 import {Router} from 'express';
 import * as socialData from "../data/social.js";
+import {ObjectId} from 'mongodb';
 const router = Router();
 
 import * as PG from '../data/playlistGeneration.js'
@@ -102,7 +103,7 @@ try{
       if (playlistID.length === 0) throw 'id cannot be an empty string or just spaces';
       if (!ObjectId.isValid(playlistID)) throw "Not Valid ID";
     } catch (e) {
-      // console.log(e);
+      console.log(e);
       return res.status(400).json({error: e});
     }
     //try getting the post by ID
@@ -119,8 +120,9 @@ try{
       ownerName = playlist.userName;
       caption = playlist.caption;
       isOwner = (req.session.user.id == playlist.userID);
-      id = rq.session.user.id;
+      id = req.session.user.id;
     } catch(e){
+      console.log(e);
       return res.status(404).json({error: e});
     }
     res.render('playlist', { 
@@ -129,8 +131,8 @@ try{
       ownerName,
       caption,
       isOwner,
-      id
-      , loggedIn: true
+      id, 
+      loggedIn: true
   });
   })
   .delete(async (req, res) => {
@@ -153,7 +155,7 @@ try{
       console.log(e);
       return res.status(404).json({error: e});
     }
-  })
+  });
 
   // social feed routes
   router
