@@ -136,7 +136,6 @@ export const getRecomendations = async (genres, mood, limit, accessToken, title,
         { $push: { createdPlaylists: insertInfo.insertedId.toString() } },
         { returnOriginal: false } 
     );
-    
-    return insertInfo.insertedId.toString();
 
+    return insertInfo.insertedId.toString();
 }
