@@ -54,7 +54,7 @@ export const getPlaylistJSON = async (arr, accessToken) => {
   return response.data.tracks;
 }
 
-export const addPlaylistToSpotify = async(playlist, accessToken, userID, playlistdescription, playlistName, isPublic) => {
+export const addPlaylistToSpotify = async(accessToken, userID, playlistdescription, playlistName, isPublic) => {
 
   let headers = {
     headers: {
