@@ -11,7 +11,7 @@ export const createUser = async(firstName, lastName, email, username, password) 
     username = helper.checkUsername(username);
     password = helper.checkPassword(password);
 
-    let hashedPassword = bcrypt.hash(password, 16);
+    let hashedPassword = await bcrypt.hash(password, 16);
 
     const userCollection = await users();
 
@@ -44,9 +44,9 @@ export const loginUser = async(username, password) => {
 
     let userCollection = await users();
 
-    const usernameExists = await userCollection.findOne({username: username.toLowerCase()});
-    if(!usernameExists) throw `Either the username or password is invalid.`;
-
+    const userList = await userCollection.find({ username: username}).toArray();
+    if(userList.length == 0){throw "Either the username or password is invalid"}
+    let usernameExists = userList[0];
     let passwordMatches = await bcrypt.compare(password, usernameExists.password);
     if(!passwordMatches) throw `Either the username or password is invalid`;
 
