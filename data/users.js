@@ -11,7 +11,7 @@ export const createUser = async(firstName, lastName, email, username, password) 
     username = helper.checkUsername(username);
     password = helper.checkPassword(password);
 
-    let hashedPassword = await bcrypt.hash(password, 16);
+    let hashedPassword = await bcrypt.hash(password, 11);
 
     const userCollection = await users();
 
