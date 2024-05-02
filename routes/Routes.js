@@ -163,7 +163,7 @@ try{
       return res.status(400).json({error: e});
     }
     // if we get the feed, render socialFeed
-    res.render('socialFeed', {playlists:feed, script_partial:'like_and_comment_ajax'});
+    res.render('socialFeed', {loggedIn: true, playlists:feed, script_partial:'like_and_comment_ajax'});
   })
 
 router.route('/register')
@@ -171,7 +171,7 @@ router.route('/register')
       if (req.session.user){
           res.redirect('/authorize');
         } else{
-          res.render('register', {title: "Register"});
+          res.render('register', {title: "Register", loggedIn: false});
         }
   })
   .post(async(req, res) => {
@@ -209,7 +209,7 @@ router.route('/register')
       if (req.session.user){
         res.redirect('/authorize');
       } else{
-        res.render('login', {title: "Login"});
+        res.render('login', {title: "Login", loggedIn: false});
       };
   })
   .post(async(req, res) => {
@@ -293,18 +293,24 @@ router.route('/accessToken').get( async (req, res) => {
   });
 
   router.route('/profile').get(async (req, res) => {
+    let numFollowers = undefined;
+    let topTracks = undefined;
+    let topArtists = undefined;
+    let likedPlaylists = undefined;
+    let savedPlaylists = undefined;
+    let genreBreakdown = undefined;
     try{
-      const topArtists = await analytics.getTopArtists(req.session.accessToken, 10);
-      const topTracks = await analytics.getTopArtists(req.session.accessToken, 10);
-      const numFollowers = await analytics.getSpotifyFollowers(req.session.accessToken);
-      const likedPlaylists = await analytics.getLikedPlaylists(req.session.username);
-      const savedPlaylists = await analytics.getSavedPlaylists(req.session.username);
-      const genreBreakdown = await analytics.getGenreBreakdown(req.session.accessToken);
+      topArtists = await analytics.getTopArtists(req.session.user.accessToken, 10);
+      topTracks = await analytics.getTopArtists(req.session.user.accessToken, 10);
+      numFollowers = await analytics.getSpotifyFollowers(req.session.user.accessToken);
+      likedPlaylists = await analytics.getLikedPlaylists(req.session.user.username);
+      savedPlaylists = await analytics.getSavedPlaylists(req.session.user.username);
+      genreBreakdown = await analytics.getGenreBreakdown(req.session.user.accessToken);
     }catch(e){
       return res.status(500).json({error: "Internal Server Error"});
     }
 
-    return res.render('./profile', {title: "Profile", username: req.session.username, numFollowers: numFollowers, topTrakcs: topTracks, 
+    return res.render('./profile', {title: "Profile", loggedIn: true, username: req.session.username, numFollowers: numFollowers, topTrakcs: topTracks, 
                       topArtists: topArtists, genres: genreBreakdown, likedPlaylists: likedPlaylists, savedPlaylists: savedPlaylists});
 
   });
