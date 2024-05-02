@@ -21,7 +21,7 @@ router.route('/').get(async (req, res) => {
 
 router.route('/generator')
   .get(async (req, res) => {
-    res.render('generator', {title: "generator"});
+    res.render('generator', {title: "Generator", loggedIn: true});
   })
   .post(async (req, res) => {
     //code here for POST
@@ -82,7 +82,7 @@ try{
     if (genRet) {
       res.redirect(`/playlist/${genRet}`);
     } else {
-      res.render('generator', { title: "generator", Error: 'Failed to generate playlist' });
+      res.render('generator', { title: "generator", Error: 'Failed to generate playlist', loggedIn: true });
     }
   } catch (error) {
     return res.status(400).render("generator", { title: "generator", Error: error });
@@ -130,6 +130,7 @@ try{
       caption,
       isOwner,
       id
+      , loggedIn: true
   });
   })
   .delete(async (req, res) => {

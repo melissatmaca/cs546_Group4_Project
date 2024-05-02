@@ -128,13 +128,10 @@ export const getRecomendations = async (genres, mood, limit, accessToken, title,
 
    
     const usersCollection = await c.users();
-    console.log('here');
     const user = await usersCollection.findOneAndUpdate(
         { username:  username},
         { $push: { createdPlaylists: insertInfo.insertedId.toString() } },
         { returnOriginal: false } 
     );
-
-    console.log('here');
     return insertInfo.insertedId.toString();
 }

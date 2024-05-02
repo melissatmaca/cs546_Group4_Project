@@ -10,4 +10,53 @@ a.fill-div {
   width: 100%;
   text-decoration: none;
 }
+body {
+  margin: 0;
+  padding: 0;
+}
 
+.navigation-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: black;
+  color: white;
+  padding: 10px;
+}
+
+.logo {
+  width: 150px; 
+  height: auto;
+  margin-bottom: 20px;
+}
+
+.navigation-bar ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+.navigation-bar ul li {
+  margin-right: 20px;
+  width: 300px; 
+  text-align: center; 
+}
+
+.navigation-bar ul li:last-child {
+  margin-right: 0;
+}
+
+.navigation-bar a {
+  color: white;
+  font-size: 30px;
+  text-decoration: none;
+}
+
+.navigation-bar a:hover {
+  color:limegreen;
+}
+
+.navigation-bar ul li:nth-child(2) {
+  flex-grow: 1; 
+}
