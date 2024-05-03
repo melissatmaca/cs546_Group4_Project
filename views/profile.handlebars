@@ -1,54 +1,75 @@
 <div id="profileMainContainer">
+<h1 id="usernameHeader">Hello, {{username}}!</h1>
 
-    <h1 id="usernameHeader">Hello, {{username}}!</h1>
-
-    <div id="dashboardContainer">
-        
+    <section id="dashboardContainer">
+        <div id="dashboardTitle">
+            <h2>Spotify Analytics Dashboard</h2>
+        </div>
+        <div id="dashboardHeader">
+            <h2>Spotify Username:</h2>
+            <p>{{spotifyUsername}}</p>
+        </div>
         <div id="dashboardCardContainer">
-            <div id="numFollowersCard" class="analyticsCard">
-                <h2 class="analyticsCardTitle">Number of Followers:</h2>
-                <p>{{numFollowers}}</p>
+            <div id="leftSideDashboard">
+                <div id="numFollowersCard" class="analyticsCard">
+                    <h2 class="analyticsCardTitle">Number of Spotify Followers:</h2>
+                    <p>{{numFollowers}}</p>
+                </div>
+                
+                    <div id="topItemsContainer">
+                        <div id="topTracksCard" class="analyticsCard">
+                            <h2 class="analyticsCardTitle">Top Tracks:</h2>
+                            <ol class="topList">
+                            {{#each topTracks}}
+                                <li class="topItems">{{this}}</li>
+                            {{/each}}
+                            </ol>
+                        </div>
+
+                        <div id="topArtistsCard" class="analyticsCard">
+                            <h2 class="analyticsCardTitle">Top Artists:</h2>
+                            <ol class="topList">
+                            {{#each topArtists}}
+                                <li class="topItems">{{this}}</li>
+                            {{/each}}
+                            </ol>
+                        </div>
+                    </div>
             </div>
             
-            <div id="topTracksCard" class="analyticsCard">
-                <h2 class="analyticsCardTitle">Top Tracks:</h2>
-                <ol class="topList">
-                {{#each topTracks}}
-                    <li class="topItens">{{this}}</li>
-                {{/each}}
-                </ol>
-            </div>
-
-            <div id="topArtistsCard" class="analyticsCard">
-                <h2 class="analyticsCardTitle">Top Artists:</h2>
-                <ol class="topList">
-                {{#each topArtists}}
-                    <li class="topItens">{{this}}</li>
-                {{/each}}
-                </ol>
-            </div>
-
             <div id="genreCard" class="analyticsCard">
-                <h2 class="analyticsCardTitle">Genre Diversity:</h2>
-                {{#each genres}}
-                    <li class="topItens">{{this}}</li>
-                {{/each}}
+                <h2 class="analyticsCardTitle">Genre Breakdown:</h2>
+                <img src="{{genres}}" alt="Genre Breakdown Pie Chart">
             </div>
         </div>
         
-    </div>
+    </section>
 
-    <div id="playlistsContainer">
+    <section id="playlistsContainer">
         <div id="playlistSelector">
-            <div id="savedPlaylists">
+            <div id="likedPlaylists">
 
 
             </div>
-            <div id="createdPlaylist">
+            <div id="createdPlaylists">
+                <h2>Your Generated Playlists</h2>
+                {{#each createdPlaylists}}
+                    <h3>{{this.title}}</h3>
+                    <p>{{this.caption}}</p>
+                    {{#if posted}}
+                    <p>Likes: {{this.likes}}</p>
+                    {{/if}}
+                    <ul>
+                    {{#each this.tracks}}
+                        <li>{{this}}</li>
+                    {{/each}}
+                    </ul>
+                    <a href="/playlist/{{this._id}}">View Playlist</a>
+                {{/each}}
 
             </div>
 
         </div>
-    </div>
+    </section>
 
 </div>

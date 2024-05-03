@@ -3,6 +3,8 @@ import * as socialData from "../data/social.js";
 import {ObjectId} from 'mongodb';
 const router = Router();
 
+import {ChartJSNodeCanvas} from 'chartjs-node-canvas';
+
 import * as PG from '../data/playlistGeneration.js'
 import {get, getAll, getAllPosted, remove, getPlaylistJSON, addPlaylistToSpotify, populatePlaylist} from '../data/playlists.js' 
 import { playlists, users } from '../config/mongoCollections.js';
@@ -14,6 +16,7 @@ import xss from 'xss';
 import * as analytics from '../data/analytics.js';
 import querystring from 'querystring';
 import axios from 'axios';
+import { userInfo } from 'os';
 
 router.route('/').get(async (req, res) => {
   res.redirect('/login');
@@ -324,21 +327,58 @@ router.route('/accessToken').get( async (req, res) => {
     let topTracks = undefined;
     let topArtists = undefined;
     let likedPlaylists = undefined;
-    let savedPlaylists = undefined;
+    let createdPlaylists = undefined;
     let genreBreakdown = undefined;
+    let spotifyUsername = undefined;
+    let userInfo = undefined;
     try{
       topArtists = await analytics.getTopArtists(req.session.user.accessToken, 10);
-      topTracks = await analytics.getTopArtists(req.session.user.accessToken, 10);
-      numFollowers = await analytics.getSpotifyFollowers(req.session.user.accessToken);
+      topTracks = await analytics.getTopTracks(req.session.user.accessToken, 10);
+      userInfo = await analytics.getSpotifyUserInfo(req.session.user.accessToken);
+      numFollowers = userInfo.followers.total;
+      spotifyUsername = userInfo.display_name;
       likedPlaylists = await analytics.getLikedPlaylists(req.session.user.username);
-      savedPlaylists = await analytics.getSavedPlaylists(req.session.user.username);
+      createdPlaylists = await analytics.getCreatedPlaylists(req.session.user.username);
       genreBreakdown = await analytics.getGenreBreakdown(req.session.user.accessToken);
     }catch(e){
-      return res.status(500).json({error: "Internal Server Error"});
+      return res.status(500).json({error: `${e || `Internal Server Error`}`});
     }
 
-    return res.render('./profile', {title: "Profile", loggedIn: true, username: req.session.username, numFollowers: numFollowers, topTrakcs: topTracks, 
-                      topArtists: topArtists, genres: genreBreakdown, likedPlaylists: likedPlaylists, savedPlaylists: savedPlaylists});
+    const labels = Object.keys(genreBreakdown);
+    const data = Object.values(genreBreakdown);
+    const chartNode = new ChartJSNodeCanvas({ width: 400, height: 400 });
+
+    const chartData = {
+      type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: helper.getRandomColors(labels.length)
+                }]
+            },
+          options: {
+            plugins: {
+              legend: {
+                  display: true,
+                  position: 'left', 
+                  labels: {
+                      font: {
+                          size: 16 
+                      },
+                      color: 'black',
+                  }
+              },
+          },
+          responsive: true
+          }
+    };
+    let genrePieChart = await chartNode.renderToBuffer(chartData);
+    genrePieChart = `data:image/png;base64,${genrePieChart.toString('base64')}`;
+
+
+    return res.render('./profile', {title: "Profile", loggedIn: true, spotifyUsername: spotifyUsername, username: req.session.user.username, numFollowers: numFollowers, topTracks: topTracks, 
+                      topArtists: topArtists, genres: genrePieChart, likedPlaylists: likedPlaylists, createdPlaylists: createdPlaylists});
 
   });
 
