@@ -29,7 +29,7 @@ export const get = async (playlistID) => {
   return playlist;
 };
 
-export const remove = async (playlistID) => {
+export const remove = async (playlistID, username) => {
     if (!playlistID) throw 'You must provide an id to search for';
     if (typeof playlistID !== 'string') throw 'Id must be a string';
     if (playlistID.trim().length === 0) throw 'id cannot be an empty string or just spaces';

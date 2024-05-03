@@ -1,6 +1,7 @@
 import {Router} from 'express';
 import * as socialData from "../data/social.js";
 const router = Router();
+import {ObjectId} from 'mongodb'; 
 
 import * as PG from '../data/playlistGeneration.js'
 import {get, getAll, getAllPosted, remove, getPlaylistJSON} from '../data/playlists.js' 
@@ -59,9 +60,10 @@ router.route('/generator')
 try{
     if(typeof genres[0] != 'string'){throw 'genres must be a string'}
     if(typeof genres[1] != 'string'){throw 'genres must be a string'}
-    if(!genreList.includes(genre[0]) ||!genreList.includes([1])){throw 'genres must be one of the given options'}
+    if(!genreList.includes(genres[0]) ||!genreList.includes(genres[1])){throw 'genres must be one of the given options'}
     if(typeof mood != 'string'){throw 'mood must be a string'}
     if(mood != "energetic" && mood != "calm" && mood != "sad" && mood != "happy" && mood != "no mood" ){throw 'mood must be one of the given options'}
+    limit = parseInt(limit);
     if(typeof limit != 'number'){throw 'Limit Not Number'}
     if(limit < 1){throw 'Limit too small'}
     if(limit >100){throw 'Limit must be maximum 100 songs'}
@@ -72,17 +74,19 @@ try{
     if(caption.length < 1){throw 'Caption too short'}
     if(caption.length >255){throw 'Caption must be maximum 255 characters'}
 }catch(Error){
+    console.log(Error);
     res.status(400).render("generator", ({title: "generator", Error: Error}))
 }
 
     try{
-    let genRet = await PG.getRecomendations(genres,mood,limit,accessToken,title,caption);
+    let genRet = await PG.getRecomendations(genres,mood,limit,accessToken,title,caption, req.session.user.id, req.session.user.username);
 
     if(genRet){
-    res.redirect(`/playlists/${genRet}`);
+    res.redirect(`/playlist/${genRet}`);
     }
   }catch(e){
     res.render('generator', {title:"generator", Error: e, loggedIn: true})
+    console.log(e);
   }
   });  
 
@@ -91,8 +95,9 @@ try{
   router
   .route('/playlist/:id')
   .get(async (req, res) => {
+    let playlistID;
     try {
-      let playlistID = req.params.id;
+      playlistID = req.params.id;
       if (!playlistID) throw 'You must provide an id to search for';
       if (typeof playlistID !== 'string') throw 'Id must be a string';
       playlistID = playlistID.trim();
@@ -102,6 +107,7 @@ try{
       // console.log(e);
       return res.status(400).json({error: e});
     }
+    
     //try getting the post by ID
     let playlist, playlistData, playlistTitle, ownerName, caption, isOwner, id;
     try {
@@ -109,15 +115,14 @@ try{
     } catch (e) {
       return res.status(404).json({error: e});
     }
-    
     try{
       playlistData = await getPlaylistJSON(playlist.tracks, req.session.user.accessToken);
       playlistTitle = playlist.title;
       ownerName = playlist.userName;
       caption = playlist.caption;
       isOwner = (req.session.user.id == playlist.userID);
-      id = rq.session.user.id;
     } catch(e){
+      //console.log(e);
       return res.status(404).json({error: e});
     }
     res.render('playlist', { 
@@ -126,11 +131,11 @@ try{
       ownerName,
       caption,
       isOwner,
-      id,
+      playlistID,
       loggedIn: true
   });
   })
-  .delete(async (req, res) => {
+  .post(async (req, res) => {
     try {
       let playlistID = req.params.id;
       if (!playlistID) throw 'You must provide an id to search for';
@@ -139,13 +144,14 @@ try{
       if (playlistID.length === 0) throw 'id cannot be an empty string or just spaces';
       if (!ObjectId.isValid(playlistID)) throw "Not Valid ID";
     } catch (e) {
+      console.log(e);
       return res.status(400).json({error: e});
     }
     //try to delete post
     try {
       
-      let deletedPlaylist = await remove(req.params.id.trim());
-      return res.json(deletedPlaylist);
+      let deletedPlaylist = await remove(req.params.id.trim(), req.session.user.username);
+      res.render('delete', {title: 'Deleted Playlist', loggedIn: true, playlist: deletedPlaylist});
     } catch (e) {
       console.log(e);
       return res.status(404).json({error: e});
@@ -309,6 +315,7 @@ router.route('/register')
       try {
         loggedUser = await loginUser(userData.username, userData.password);
         req.session.user = loggedUser;
+        req.session.user.id = loggedUser._id.toString();
       } catch(e) {
         return res.status(400).render('login', {error: "Invalid username and/or password."});
       }
