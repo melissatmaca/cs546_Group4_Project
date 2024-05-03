@@ -46,7 +46,7 @@ export const loginUser = async(username, password) => {
 
     let userCollection = await users();
 
-    const userList = await userCollection.find({ username: username}).toArray();
+    const userList = await userCollection.find({ username: username.toLowerCase()}).toArray();
     if(userList.length == 0){throw "Either the username or password is invalid"}
     let usernameExists = userList[0];
     let passwordMatches = await bcrypt.compare(password, usernameExists.password);
