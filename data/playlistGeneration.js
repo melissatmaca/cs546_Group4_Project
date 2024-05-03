@@ -2,29 +2,29 @@ import axios from 'axios';
 import * as c from "../config/mongoCollections.js";
 
 export const getRecomendations = async (genres, mood, limit, accessToken, title, caption, id, username) =>{
-
-    let genreList = [
+    
+    // let genreList = [
         
-        "acoustic", "afrobeat", "alt-rock", "alternative", "ambient", "anime", "black-metal",
-        "bluegrass", "blues", "bossanova", "brazil", "breakbeat", "british", "cantopop",
-        "chicago-house", "children", "chill", "classical", "club", "comedy", "country",
-        "dance", "dancehall", "death-metal", "deep-house", "detroit-techno", "disco",
-        "disney", "drum-and-bass", "dub", "dubstep", "edm", "electro", "electronic", "emo",
-        "folk", "forro", "french", "funk", "garage", "german", "gospel", "goth", "grindcore",
-        "groove", "grunge", "guitar", "happy", "hard-rock", "hardcore", "hardstyle",
-        "heavy-metal", "hip-hop", "holidays", "honky-tonk", "house", "idm", "indian",
-        "indie", "indie-pop", "industrial", "iranian", "j-dance", "j-idol", "j-pop",
-        "j-rock", "jazz", "k-pop", "kids", "latin", "latino", "malay", "mandopop",
-        "metal", "metal-misc", "metalcore", "minimal-techno", "movies", "mpb", "new-age",
-        "new-release", "opera", "pagode", "party", "philippines-opm", "piano", "pop",
-        "pop-film", "post-dubstep", "power-pop", "progressive-house", "psych-rock", "punk",
-        "punk-rock", "r-n-b", "rainy-day", "reggae", "reggaeton", "road-trip", "rock",
-        "rock-n-roll", "rockabilly", "romance", "sad", "salsa", "samba", "sertanejo",
-        "show-tunes", "singer-songwriter", "ska", "sleep", "songwriter", "soul", "soundtracks",
-        "spanish", "study", "summer", "swedish", "synth-pop", "tango", "techno", "trance",
-        "trip-hop", "turkish", "work-out", "world-music", "noGenre"
-      ];
-    if(!genreList.includes(genres[0]) ||!genreList.includes(genres[1])){throw 'genres must be one of the given options'}
+    //     "acoustic", "afrobeat", "alt-rock", "alternative", "ambient", "anime", "black-metal",
+    //     "bluegrass", "blues", "bossanova", "brazil", "breakbeat", "british", "cantopop",
+    //     "chicago-house", "children", "chill", "classical", "club", "comedy", "country",
+    //     "dance", "dancehall", "death-metal", "deep-house", "detroit-techno", "disco",
+    //     "disney", "drum-and-bass", "dub", "dubstep", "edm", "electro", "electronic", "emo",
+    //     "folk", "forro", "french", "funk", "garage", "german", "gospel", "goth", "grindcore",
+    //     "groove", "grunge", "guitar", "happy", "hard-rock", "hardcore", "hardstyle",
+    //     "heavy-metal", "hip-hop", "holidays", "honky-tonk", "house", "idm", "indian",
+    //     "indie", "indie-pop", "industrial", "iranian", "j-dance", "j-idol", "j-pop",
+    //     "j-rock", "jazz", "k-pop", "kids", "latin", "latino", "malay", "mandopop",
+    //     "metal", "metal-misc", "metalcore", "minimal-techno", "movies", "mpb", "new-age",
+    //     "new-release", "opera", "pagode", "party", "philippines-opm", "piano", "pop",
+    //     "pop-film", "post-dubstep", "power-pop", "progressive-house", "psych-rock", "punk",
+    //     "punk-rock", "r-n-b", "rainy-day", "reggae", "reggaeton", "road-trip", "rock",
+    //     "rock-n-roll", "rockabilly", "romance", "sad", "salsa", "samba", "sertanejo",
+    //     "show-tunes", "singer-songwriter", "ska", "sleep", "songwriter", "soul", "soundtracks",
+    //     "spanish", "study", "summer", "swedish", "synth-pop", "tango", "techno", "trance",
+    //     "trip-hop", "turkish", "work-out", "world-music", "noGenre"
+    //   ];
+    // if(!genreList.includes(genres[0]) ||!genreList.includes(genres[1])){throw 'genres must be one of the given options'}
     if(typeof limit != 'number'){throw 'Limit Not Number'}
     if(limit < 1){throw 'Limit too small'}
     if(limit >100){throw 'Limit must be maximum 100 songs'}
@@ -34,7 +34,6 @@ export const getRecomendations = async (genres, mood, limit, accessToken, title,
     if(typeof caption != 'string'){throw 'Caption not string'}
     if(caption.length < 1){throw 'Caption too short'}
     if(caption.length >255){throw 'Caption must be maximum 255 characters'}
-
     let response = await axios.get(`https://api.spotify.com/v1/me/top/artists`, {
         headers: {
             'Authorization': `Bearer ${accessToken}`
@@ -133,6 +132,7 @@ export const getRecomendations = async (genres, mood, limit, accessToken, title,
     for(let i = 0; i<limit; i++){
         ret.push(response.data.tracks[i].id);
     }
+    
     const playlistCollection = await c.playlists();
     let newPlaylist = {
         userID: id,
@@ -144,12 +144,11 @@ export const getRecomendations = async (genres, mood, limit, accessToken, title,
         likes: [],
         comments: []
     }
-    
+
     const insertInfo = await playlistCollection.insertOne(newPlaylist);
     if (!insertInfo.acknowledged || !insertInfo.insertedId)
     throw 'Could not add playlist';
 
-   
     const usersCollection = await c.users();
     const user = await usersCollection.findOneAndUpdate(
         { username:  username},
