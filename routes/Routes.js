@@ -408,7 +408,8 @@ router.route('/accessToken').get( async (req, res) => {
                 labels: labels,
                 datasets: [{
                     data: data,
-                    backgroundColor: helper.getRandomColors(labels.length)
+                    backgroundColor: helper.getRandomColors(labels.length),
+                    borderColor: 'black',
                 }]
             },
           options: {
@@ -429,8 +430,6 @@ router.route('/accessToken').get( async (req, res) => {
     };
     let genrePieChart = await chartNode.renderToBuffer(chartData);
     genrePieChart = `data:image/png;base64,${genrePieChart.toString('base64')}`;
-
-
     return res.render('./profile', {title: "Profile", loggedIn: true, spotifyUsername: spotifyUsername, username: req.session.user.username, numFollowers: numFollowers, topTracks: topTracks, 
                       topArtists: topArtists, genres: genrePieChart, likedPlaylists: likedPlaylists, createdPlaylists: createdPlaylists});
 
