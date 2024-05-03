@@ -14,6 +14,9 @@ import * as analytics from '../data/analytics.js';
 import querystring from 'querystring';
 import axios from 'axios';
 
+import {ChartJSNodeCanvas} from 'chartjs-node-canvas';
+import { userInfo } from 'os';
+
 router.route('/').get(async (req, res) => {
   res.redirect('/login');
   return;
@@ -373,19 +376,63 @@ router.route('/accessToken').get( async (req, res) => {
   });
 
   router.route('/profile').get(async (req, res) => {
+    let topTracks = undefined;
+    let topArtists = undefined;
+    let likedPlaylists = undefined;
+    let numFollowers = undefined;
+    let createdPlaylists = undefined;
+    let genreBreakdown = undefined;
+    let spotifyUsername = undefined;
+    let userInfo = undefined;
+
     try{
-      const topArtists = await analytics.getTopArtists(req.session.accessToken, 10);
-      const topTracks = await analytics.getTopArtists(req.session.accessToken, 10);
-      const numFollowers = await analytics.getSpotifyFollowers(req.session.accessToken);
-      const likedPlaylists = await analytics.getLikedPlaylists(req.session.username);
-      const savedPlaylists = await analytics.getSavedPlaylists(req.session.username);
-      const genreBreakdown = await analytics.getGenreBreakdown(req.session.accessToken);
+      topArtists = await analytics.getTopArtists(req.session.user.accessToken, 10);
+      topTracks = await analytics.getTopTracks(req.session.user.accessToken, 10);
+      userInfo = await analytics.getSpotifyUserInfo(req.session.user.accessToken);
+      numFollowers = userInfo.followers.total;
+      spotifyUsername = userInfo.display_name;
+      likedPlaylists = await analytics.getLikedPlaylists(req.session.user.username);
+      createdPlaylists = await analytics.getCreatedPlaylists(req.session.user.username);
+      genreBreakdown = await analytics.getGenreBreakdown(req.session.user.accessToken);
     }catch(e){
-      return res.status(500).json({error: "Internal Server Error"});
+      return res.status(500).json({error: `${e || `Internal Server Error`}`});
     }
 
-    return res.render('./profile', {title: "Profile", username: req.session.username, numFollowers: numFollowers, topTrakcs: topTracks, 
-                      topArtists: topArtists, genres: genreBreakdown, likedPlaylists: likedPlaylists, savedPlaylists: savedPlaylists, loggedIn: true});
+    const labels = Object.keys(genreBreakdown);
+    const data = Object.values(genreBreakdown);
+    const chartNode = new ChartJSNodeCanvas({ width: 400, height: 400 });
+
+    const chartData = {
+      type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: helper.getRandomColors(labels.length)
+                }]
+            },
+          options: {
+            plugins: {
+              legend: {
+                  display: true,
+                  position: 'left', 
+                  labels: {
+                      font: {
+                          size: 16 
+                      },
+                      color: 'black',
+                  }
+              },
+          },
+          responsive: true
+          }
+    };
+    let genrePieChart = await chartNode.renderToBuffer(chartData);
+    genrePieChart = `data:image/png;base64,${genrePieChart.toString('base64')}`;
+
+
+    return res.render('./profile', {title: "Profile", loggedIn: true, spotifyUsername: spotifyUsername, username: req.session.user.username, numFollowers: numFollowers, topTracks: topTracks, 
+                      topArtists: topArtists, genres: genrePieChart, likedPlaylists: likedPlaylists, createdPlaylists: createdPlaylists});
 
   });
 
