@@ -135,7 +135,7 @@ try{
       loggedIn: true
   });
   })
-  .delete(async (req, res) => {
+  .post(async (req, res) => {
     try {
       let playlistID = req.params.id;
       if (!playlistID) throw 'You must provide an id to search for';
