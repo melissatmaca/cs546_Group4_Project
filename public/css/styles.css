@@ -133,8 +133,58 @@ body.playlist-page {
 
 .gen-page .container {
   display: flex;
-  flex-direction: row;
 }
+.gen-page .generator-explanation{
+  line-height: 1.5;
+  font-size: 30px;
+  text-align: justify;
+}
+.gen-page .generator-explanation,
+.gen-page .gen-form {
+  flex: 1; /* Each div takes up equal space */
+  margin-right: 10px; /* Adjust the spacing between the divs */
+  padding: 20px;
+}
+
+.gen-page .gen-form {
+  display: flex;
+  flex-direction: column;
+}
+.gen-page .gen-form label {
+  margin-bottom: 10px; /* Add spacing between each form element */
+}
+
+.gen-page .gen-form input[type="text"],
+.gen-page .gen-form input[type="number"],
+.gen-page .gen-form select {
+  background-color: black;
+  color: white;
+  border: 1px solid white;
+  padding: 5px;
+  border-radius: 5px;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+}
+
+.gen-page .gen-form .submitButton {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.gen-page .gen-form .submitButton button {
+  background-color: lime;
+  color: black;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 25px;
+  align-items:flex-end;
+}
+
+
 
 
 body.del-page {
