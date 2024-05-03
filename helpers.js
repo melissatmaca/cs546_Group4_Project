@@ -84,7 +84,11 @@ export function checkPassword(password){
 export const getRandomColors = (numColors) =>{
   const colors = [];
     while (colors.length < numColors) {
-        let newColor = '#' + Math.floor(Math.random() * 16777215).toString(16);
+      let red = Math.floor(Math.random() * 255);
+      let green = Math.floor(Math.random() * 255);
+      let blue = Math.floor(Math.random() * 255);
+  
+      let newColor = `rgb(${red}, ${green}, ${blue})`;
         if (!colors.includes(newColor)) {
           colors.push(newColor);
       }
