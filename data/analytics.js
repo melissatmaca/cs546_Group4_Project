@@ -1,5 +1,7 @@
 // All the data functions for the Analytics for each user
 import axios from 'axios';
+import {ObjectId} from 'mongodb';
+import { playlists, users } from '../config/mongoCollections.js';
 
 export const getTopArtists = async (accessToken, limit) =>{
     if(accessToken === undefined) throw "Error: accessToken is undefined.";
@@ -98,7 +100,7 @@ export const getGenreBreakdown = async (accessToken) => {
 };
 
 
-export const getSpotifyFollowers = async (accessToken) => {
+export const getSpotifyUserInfo = async (accessToken) => {
 
     try{
         const response = await axios.get('https://api.spotify.com/v1/me', {
@@ -106,7 +108,7 @@ export const getSpotifyFollowers = async (accessToken) => {
                 'Authorization': `Bearer ${accessToken}`
             }
         });
-        return response.data.followers.total;
+        return response.data;
     }catch(e){
         if (e.code === 'ENOTFOUND') throw 'Error: Invalid URL';
         else if (e.response) throw `Error: ${e.response.status}: ${e.response.statusText}`;
@@ -115,13 +117,35 @@ export const getSpotifyFollowers = async (accessToken) => {
 };
 
 // Get these from the database
-export const getSavedPlaylists = async (username) => {
+export const getCreatedPlaylists = async (username) => {
+    const userCollection = await users();
+    const user = await userCollection.findOne({username: username});
 
+    if(!user) throw 'Error: no user with taht username exists';
 
+    let usersPlaylists = [];
+    for(let playlistId of user.createdPlaylists){
+        const playlistCollection = await playlists();
+        const playlist = await playlistCollection.findOne({_id: new ObjectId(playlistId)});
+        usersPlaylists.push(playlist);
+    }
+
+    return usersPlaylists;
 };
 
 // Get these from the database
 export const getLikedPlaylists = async (username) => {
+    // const userCollection = await users();
+    // const user = await userCollection.findOne({username: username});
 
+    // if(!user) throw 'Error: no user with taht username exists';
 
+    // let usersPlaylists = [];
+    // for(let playlistId of user.likedPlaylists){
+    //     const playlistCollection = await playlists();
+    //     const playlist = await playlistCollection.findOne({_id: new ObjectId(playlistId)});
+    //     usersPlaylists.push(playlist);
+    // }
+
+    // return usersPlaylists;
 };
