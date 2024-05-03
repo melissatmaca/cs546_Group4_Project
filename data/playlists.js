@@ -37,6 +37,13 @@ export const remove = async (playlistID) => {
     if (!ObjectId.isValid(playlistID)) throw 'invalid object ID';
     const playlistCollection = await c.playlists();
     const deletionInfo = await playlistCollection.findOneAndDelete({_id: new ObjectId(playlistID)});
+
+    const usersCollection = await c.users();
+    const user = await usersCollection.findOneAndUpdate(
+        { username:  username},
+        { $pull: { createdPlaylists: playlistID} },
+        { returnOriginal: false } 
+    );
   
     if (!deletionInfo) { throw `Could not delete product with id of ${playlistID}`;}
     return deletionInfo.title;

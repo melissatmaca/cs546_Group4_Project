@@ -21,7 +21,7 @@ router.route('/').get(async (req, res) => {
 
 router.route('/generator')
   .get(async (req, res) => {
-    res.render('generator', {title: "generator"});
+    res.render('generator', {title: "generator", loggedIn: true});
   })
   .post(async (req, res) => {
     //code here for POST
@@ -82,7 +82,7 @@ try{
     res.redirect(`/playlists/${genRet}`);
     }
   }catch(e){
-    res.render('generator', {title:"generator", Error: e})
+    res.render('generator', {title:"generator", Error: e, loggedIn: true})
   }
   });  
 
@@ -126,7 +126,8 @@ try{
       ownerName,
       caption,
       isOwner,
-      id
+      id,
+      loggedIn: true
   });
   })
   .delete(async (req, res) => {
@@ -163,7 +164,7 @@ try{
       return res.status(400).json({error: e});
     }
     // if we get the feed, render socialFeed
-    res.render('./socialFeed', {playlists:feed, script_partial:'like_and_comment_ajax'});
+    res.render('./socialFeed', {playlists:feed, script_partial:'like_and_comment_ajax', loggedIn: true});
   })
 
     // AJAX routes for like and comment
@@ -384,7 +385,7 @@ router.route('/accessToken').get( async (req, res) => {
     }
 
     return res.render('./profile', {title: "Profile", username: req.session.username, numFollowers: numFollowers, topTrakcs: topTracks, 
-                      topArtists: topArtists, genres: genreBreakdown, likedPlaylists: likedPlaylists, savedPlaylists: savedPlaylists});
+                      topArtists: topArtists, genres: genreBreakdown, likedPlaylists: likedPlaylists, savedPlaylists: savedPlaylists, loggedIn: true});
 
   });
 
