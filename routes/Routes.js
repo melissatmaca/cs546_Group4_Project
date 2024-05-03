@@ -1,10 +1,9 @@
 import {Router} from 'express';
 import * as socialData from "../data/social.js";
-import {ObjectId} from 'mongodb';
 const router = Router();
 
 import * as PG from '../data/playlistGeneration.js'
-import {get, getAll, getAllPosted, remove, getPlaylistJSON, addPlaylistToSpotify, populatePlaylist} from '../data/playlists.js' 
+import {get, getAll, getAllPosted, remove, getPlaylistJSON} from '../data/playlists.js' 
 import { playlists, users } from '../config/mongoCollections.js';
 
 import * as helper from '../helpers.js';
@@ -22,10 +21,11 @@ router.route('/').get(async (req, res) => {
 
 router.route('/generator')
   .get(async (req, res) => {
-    res.render('generator', {title: "Generator", loggedIn: true});
+    res.render('generator', {title: "generator"});
   })
   .post(async (req, res) => {
     //code here for POST
+
     let title = req.body.title.trim();
     let caption = req.body.caption.trim();
     let limit = req.body.limit;
@@ -59,10 +59,9 @@ router.route('/generator')
 try{
     if(typeof genres[0] != 'string'){throw 'genres must be a string'}
     if(typeof genres[1] != 'string'){throw 'genres must be a string'}
-    if(!genreList.includes(genres[0]) ||!genreList.includes(genres[1])){throw 'genres must be one of the given options'}
+    if(!genreList.includes(genre[0]) ||!genreList.includes([1])){throw 'genres must be one of the given options'}
     if(typeof mood != 'string'){throw 'mood must be a string'}
     if(mood != "energetic" && mood != "calm" && mood != "sad" && mood != "happy" && mood != "no mood" ){throw 'mood must be one of the given options'}
-    limit = parseInt(limit);
     if(typeof limit != 'number'){throw 'Limit Not Number'}
     if(limit < 1){throw 'Limit too small'}
     if(limit >100){throw 'Limit must be maximum 100 songs'}
@@ -73,38 +72,34 @@ try{
     if(caption.length < 1){throw 'Caption too short'}
     if(caption.length >255){throw 'Caption must be maximum 255 characters'}
 }catch(Error){
-
-    return res.status(400).render("generator", ({title: "generator", Error: Error}))
+    res.status(400).render("generator", ({title: "generator", Error: Error}))
 }
 
-try{
-    let genRet = await PG.getRecomendations(genres, mood, limit, accessToken, title, caption, req.session.user.id, req.session.user.username);
+    try{
+    let genRet = await PG.getRecomendations(genres,mood,limit,accessToken,title,caption);
 
-    if (genRet) {
-      res.redirect(`/playlist/${genRet}`);
-    } else {
-      res.render('generator', { title: "generator", Error: 'Failed to generate playlist', loggedIn: true });
+    if(genRet){
+    res.redirect(`/playlists/${genRet}`);
     }
-  } catch (error) {
-    return res.status(400).render("generator", { title: "generator", Error: error });
+  }catch(e){
+    res.render('generator', {title:"generator", Error: e})
   }
-});
+  });  
 
 
 
   router
   .route('/playlist/:id')
   .get(async (req, res) => {
-    let playlistID;
     try {
-      playlistID = req.params.id;
+      let playlistID = req.params.id;
       if (!playlistID) throw 'You must provide an id to search for';
       if (typeof playlistID !== 'string') throw 'Id must be a string';
       playlistID = playlistID.trim();
       if (playlistID.length === 0) throw 'id cannot be an empty string or just spaces';
       if (!ObjectId.isValid(playlistID)) throw "Not Valid ID";
     } catch (e) {
-      console.log(e);
+      // console.log(e);
       return res.status(400).json({error: e});
     }
     //try getting the post by ID
@@ -121,9 +116,8 @@ try{
       ownerName = playlist.userName;
       caption = playlist.caption;
       isOwner = (req.session.user.id == playlist.userID);
-      id = req.session.user.id;
+      id = rq.session.user.id;
     } catch(e){
-      console.log(e);
       return res.status(404).json({error: e});
     }
     res.render('playlist', { 
@@ -132,11 +126,10 @@ try{
       ownerName,
       caption,
       isOwner,
-      playlistID: playlistID, 
-      loggedIn: true
+      id
   });
   })
-  .post(async (req, res) => {
+  .delete(async (req, res) => {
     try {
       let playlistID = req.params.id;
       if (!playlistID) throw 'You must provide an id to search for';
@@ -149,33 +142,14 @@ try{
     }
     //try to delete post
     try {
+      
       let deletedPlaylist = await remove(req.params.id.trim());
-      return res.render('delete', {loggedIn: true, title: 'Deleted Playlist', playlist: deletedPlaylist});
+      return res.json(deletedPlaylist);
     } catch (e) {
       console.log(e);
       return res.status(404).json({error: e});
     }
-  });
-
-  router.post('/saveplaylist',async (req,res) => {
-    let accessToken = req.body.accessToken
-    let userID = req.body.userID
-    let playlistName = req.body.name
-    let description = req.body.description
-    let tracks = req.body.tracks
-    let isPublic = req.body.isPublic
-
-    try{
-      let newSpotifyPlaylist = await addPlaylistToSpotify(accessToken,userID,description, playlistName, isPublic);
-      let newPlaylistID = newSpotifyPlaylist.id;
-
-      let populateNewSpotifyPlaylist = await populatePlaylist(accessToken,tracks,newPlaylistID,)
-      return newSpotifyPlaylist + populateNewSpotifyPlaylist;
-    }catch(e){
-      return res.status(500).json("error: " + e)
-    }
   })
-
 
   // social feed routes
   router
@@ -189,7 +163,86 @@ try{
       return res.status(400).json({error: e});
     }
     // if we get the feed, render socialFeed
-    res.render('socialFeed', {loggedIn: true, playlists:feed, script_partial:'like_and_comment_ajax'});
+    res.render('./socialFeed', {playlists:feed, script_partial:'like_and_comment_ajax'});
+  })
+
+    // AJAX routes for like and comment
+  router
+  .route('/api/playlist/:playlistId/like')
+  .post(async (req, res) => {
+    // get all the playlist info
+    let playlistId = undefined;
+    let playlist = undefined;
+    let playlistsCollection = undefined;
+    try {
+      playlistId = req.params.playlistId;
+      playlistId = helper.checkID(playlistId, "PlaylistID");
+      playlistsCollection = await playlists();
+      if (!playlistsCollection) throw `Database not found`;
+      playlist = await playlistsCollection.findOne({
+        _id: new ObjectId(playlistId),
+      });
+      if (!playlist) throw `Could not find playlist with the id: ${playlistId}`;
+    } catch(e) {
+      return res.status(400).json({error: e});
+    }
+
+    // check whether to add or remove like
+    let likeResult = undefined;
+    // remove like
+    if (playlist.likes.includes(req.session.user._id)) {
+      try {
+        likeResult = await socialData.removeLike(req.session.user._id, playlistId);
+      } catch(e) {
+        return res.status(400).json({error: e});
+      }
+    } else {
+      // add like
+      try { 
+        likeResult = await socialData.addLike(req.session.user._id, playlistId);
+      } catch(e) {
+        return res.status(400).json({error: e});
+      }
+    }
+    res.json({ likes: likeResult });
+  })
+
+  router
+  .route('/api/playlist/:playlistId/comment')
+  .post(async (req, res) => {
+    // get all the playlist info
+    let playlistId = undefined;
+    let playlist = undefined;
+    let playlistsCollection = undefined;
+    try {
+      playlistId = req.params.playlistId;
+      playlistId = helper.checkID(playlistId, "PlaylistID");
+      playlistsCollection = await playlists();
+      if (!playlistsCollection) throw `Database not found`;
+      playlist = await playlistsCollection.findOne({
+        _id: new ObjectId(playlistId),
+      });
+      if (!playlist) throw `Could not find playlist with the id: ${playlistId}`;
+    } catch(e) {
+      return res.status(400).json({error: e});
+    }
+    // fetch the comment
+    let comment = undefined;
+    try {
+      comment = req.body.comment;
+      comment = helper.checkComment(comment, "Comment");
+      comment = xss(comment); // "clean" the textarea input
+    } catch(e) {
+      return res.status(400).json({error: e});
+    }
+    // add the comment
+    let commentAdded = undefined;
+    try {
+      commentAdded = await socialData.addComment(comment, req.session.user._id, playlistId);
+    } catch(e) {
+      return res.status(400).json({error: e});
+    }
+    res.json({comments:commentAdded});
   })
 
 router.route('/register')
@@ -197,7 +250,7 @@ router.route('/register')
       if (req.session.user){
           res.redirect('/authorize');
         } else{
-          res.render('register', {title: "Register", loggedIn: false});
+          res.render('register');
         }
   })
   .post(async(req, res) => {
@@ -235,7 +288,7 @@ router.route('/register')
       if (req.session.user){
         res.redirect('/authorize');
       } else{
-        res.render('login', {title: "Login", loggedIn: false});
+        res.render('login');
       };
   })
   .post(async(req, res) => {
@@ -255,7 +308,6 @@ router.route('/register')
       try {
         loggedUser = await loginUser(userData.username, userData.password);
         req.session.user = loggedUser;
-        req.session.user.id = loggedUser._id.toString();
       } catch(e) {
         return res.status(400).render('login', {error: "Invalid username and/or password."});
       }
@@ -320,24 +372,18 @@ router.route('/accessToken').get( async (req, res) => {
   });
 
   router.route('/profile').get(async (req, res) => {
-    let numFollowers = undefined;
-    let topTracks = undefined;
-    let topArtists = undefined;
-    let likedPlaylists = undefined;
-    let savedPlaylists = undefined;
-    let genreBreakdown = undefined;
     try{
-      topArtists = await analytics.getTopArtists(req.session.user.accessToken, 10);
-      topTracks = await analytics.getTopArtists(req.session.user.accessToken, 10);
-      numFollowers = await analytics.getSpotifyFollowers(req.session.user.accessToken);
-      likedPlaylists = await analytics.getLikedPlaylists(req.session.user.username);
-      savedPlaylists = await analytics.getSavedPlaylists(req.session.user.username);
-      genreBreakdown = await analytics.getGenreBreakdown(req.session.user.accessToken);
+      const topArtists = await analytics.getTopArtists(req.session.accessToken, 10);
+      const topTracks = await analytics.getTopArtists(req.session.accessToken, 10);
+      const numFollowers = await analytics.getSpotifyFollowers(req.session.accessToken);
+      const likedPlaylists = await analytics.getLikedPlaylists(req.session.username);
+      const savedPlaylists = await analytics.getSavedPlaylists(req.session.username);
+      const genreBreakdown = await analytics.getGenreBreakdown(req.session.accessToken);
     }catch(e){
       return res.status(500).json({error: "Internal Server Error"});
     }
 
-    return res.render('./profile', {title: "Profile", loggedIn: true, username: req.session.username, numFollowers: numFollowers, topTrakcs: topTracks, 
+    return res.render('./profile', {title: "Profile", username: req.session.username, numFollowers: numFollowers, topTrakcs: topTracks, 
                       topArtists: topArtists, genres: genreBreakdown, likedPlaylists: likedPlaylists, savedPlaylists: savedPlaylists});
 
   });

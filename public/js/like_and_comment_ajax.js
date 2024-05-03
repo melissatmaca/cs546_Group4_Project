@@ -59,7 +59,7 @@
       }
     });
 
-    //H andling textarea for removing default text on focus, and adding it when not focused
+    // Handling textarea for removing default text on focus, and adding it when not focused
     $(".playlist").on("focus", "textarea", function () {
       if (this.value === "Write a comment...") {
         this.value = "";
