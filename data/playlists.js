@@ -39,7 +39,7 @@ export const remove = async (playlistID) => {
     const deletionInfo = await playlistCollection.findOneAndDelete({_id: new ObjectId(playlistID)});
   
     if (!deletionInfo) { throw `Could not delete product with id of ${playlistID}`;}
-    return `${deletionInfo.title} has been successfully deleted!`;
+    return deletionInfo.title;
   };
 
 export const getPlaylistJSON = async (arr, accessToken) => {

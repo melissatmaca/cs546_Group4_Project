@@ -160,3 +160,12 @@ body.playlist-page {
   cursor: pointer;
   font-size: 16px;
 }
+
+body.del-page {
+  background-color: rgb(25, 25, 25);
+  color: white;
+}
+.del-page h1,
+.del-page p {
+  margin-left: 20px;
+}

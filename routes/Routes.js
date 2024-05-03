@@ -150,7 +150,7 @@ try{
     //try to delete post
     try {
       let deletedPlaylist = await remove(req.params.id.trim());
-      return res.redirect('/feed');
+      return res.render('delete', {loggedIn: true, title: 'Deleted Playlist', playlist: deletedPlaylist});
     } catch (e) {
       console.log(e);
       return res.status(404).json({error: e});
