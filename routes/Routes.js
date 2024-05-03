@@ -95,8 +95,9 @@ try{
   router
   .route('/playlist/:id')
   .get(async (req, res) => {
+    let playlistID;
     try {
-      let playlistID = req.params.id;
+      playlistID = req.params.id;
       if (!playlistID) throw 'You must provide an id to search for';
       if (typeof playlistID !== 'string') throw 'Id must be a string';
       playlistID = playlistID.trim();
@@ -131,7 +132,7 @@ try{
       ownerName,
       caption,
       isOwner,
-      id, 
+      playlistID: playlistID, 
       loggedIn: true
   });
   })
@@ -148,9 +149,8 @@ try{
     }
     //try to delete post
     try {
-      
       let deletedPlaylist = await remove(req.params.id.trim());
-      return res.json(deletedPlaylist);
+      return res.redirect('/feed');
     } catch (e) {
       console.log(e);
       return res.status(404).json({error: e});
