@@ -135,7 +135,8 @@ try{
       caption,
       isOwner,
       playlistID,
-      loggedIn: true
+      loggedIn: true, 
+      title: playlistTitle
   });
   })
   .post(async (req, res) => {
