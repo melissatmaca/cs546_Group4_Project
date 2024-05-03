@@ -231,6 +231,7 @@ try{
     try {
       comment = req.body.comment;
       comment = helper.checkComment(comment, "Comment");
+      comment = xss(comment); // "clean" the textarea input
     } catch(e) {
       return res.status(400).json({error: e});
     }
