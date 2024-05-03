@@ -1,8 +1,10 @@
+
+<body class="playlist-page">
 <h1>{{playlistTitle}}</h1>
 <p>Owner: {{ownerName}}</p>
 <p>{{caption}}</p>
 {{#if isOwner}}
-    <form id="deleteForm" action="/playlist" method="DELETE">
+    <form id="deleteForm" action="/playlist/{{playlistID}}" method="POST">
         <button type="submit">Delete Playlist</button>
     </form>
 {{/if}}
@@ -16,3 +18,7 @@
         </li>
     {{/each}}
 </ol>
+<form id="saveToSpotifyForm" action="/saveplaylist" method="POST">
+        <button type="submit">Save to Spotify</button>
+</form>
+</body>

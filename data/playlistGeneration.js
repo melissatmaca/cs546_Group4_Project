@@ -1,7 +1,30 @@
 import axios from 'axios';
 import * as c from "../config/mongoCollections.js";
 
-export const getRecomendations = async (genres, mood, limit, accessToken, title, caption) =>{
+export const getRecomendations = async (genres, mood, limit, accessToken, title, caption, id, username) =>{
+
+    let genreList = [
+        
+        "acoustic", "afrobeat", "alt-rock", "alternative", "ambient", "anime", "black-metal",
+        "bluegrass", "blues", "bossanova", "brazil", "breakbeat", "british", "cantopop",
+        "chicago-house", "children", "chill", "classical", "club", "comedy", "country",
+        "dance", "dancehall", "death-metal", "deep-house", "detroit-techno", "disco",
+        "disney", "drum-and-bass", "dub", "dubstep", "edm", "electro", "electronic", "emo",
+        "folk", "forro", "french", "funk", "garage", "german", "gospel", "goth", "grindcore",
+        "groove", "grunge", "guitar", "happy", "hard-rock", "hardcore", "hardstyle",
+        "heavy-metal", "hip-hop", "holidays", "honky-tonk", "house", "idm", "indian",
+        "indie", "indie-pop", "industrial", "iranian", "j-dance", "j-idol", "j-pop",
+        "j-rock", "jazz", "k-pop", "kids", "latin", "latino", "malay", "mandopop",
+        "metal", "metal-misc", "metalcore", "minimal-techno", "movies", "mpb", "new-age",
+        "new-release", "opera", "pagode", "party", "philippines-opm", "piano", "pop",
+        "pop-film", "post-dubstep", "power-pop", "progressive-house", "psych-rock", "punk",
+        "punk-rock", "r-n-b", "rainy-day", "reggae", "reggaeton", "road-trip", "rock",
+        "rock-n-roll", "rockabilly", "romance", "sad", "salsa", "samba", "sertanejo",
+        "show-tunes", "singer-songwriter", "ska", "sleep", "songwriter", "soul", "soundtracks",
+        "spanish", "study", "summer", "swedish", "synth-pop", "tango", "techno", "trance",
+        "trip-hop", "turkish", "work-out", "world-music", "noGenre"
+      ];
+    if(!genreList.includes(genres[0]) ||!genreList.includes(genres[1])){throw 'genres must be one of the given options'}
     if(typeof limit != 'number'){throw 'Limit Not Number'}
     if(limit < 1){throw 'Limit too small'}
     if(limit >100){throw 'Limit must be maximum 100 songs'}
@@ -26,18 +49,17 @@ export const getRecomendations = async (genres, mood, limit, accessToken, title,
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             }
-        });
-        let tracksL = [];
-        for(let track of response.data.items){
-            tracksL.push(track.id);
-    }
-
-
+    });
+    let tracksL = [];
+    let seed_artists, seed_genres;
+    for(let track of response.data.items){
+        tracksL.push(track.id);
+    } 
     if(artists.length == 1){
         seed_artists = artists[0];
     }
     else{
-        seed_artists = artists[0]+","+artists[1];
+        seed_artists = artists.slice(0, 2).join(",");
     }
     if(genres[1] == "noGenre"){
         seed_genres = genres[0];
@@ -45,7 +67,6 @@ export const getRecomendations = async (genres, mood, limit, accessToken, title,
     else{
         seed_genres = genres[0]+','+genres[1];
     }
-
     let target_acousticness, target_danceability, target_energy, target_instrumentalness, target_liveness, target_speechiness, target_valence;
     //Values subject to testing
     if (mood === "energetic") {
@@ -108,35 +129,32 @@ export const getRecomendations = async (genres, mood, limit, accessToken, title,
         'Authorization': `Bearer ${accessToken}`
     }
     });
-
     let ret = [];
     for(let i = 0; i<limit; i++){
         ret.push(response.data.tracks[i].id);
     }
     const playlistCollection = await c.playlists();
-
     let newPlaylist = {
-        userID: req.session.user.id,
-        userName: req.session.user.username,
+        userID: id,
+        userName: username,
         title: title,
         caption: caption,
         posted: false,
-        tracks: tracksL,
+        tracks: ret,
         likes: [],
         comments: []
     }
-
+    
     const insertInfo = await playlistCollection.insertOne(newPlaylist);
     if (!insertInfo.acknowledged || !insertInfo.insertedId)
     throw 'Could not add playlist';
 
+   
     const usersCollection = await c.users();
     const user = await usersCollection.findOneAndUpdate(
-        { _id: new ObjectId(req.session.user.id) },
+        { username:  username},
         { $push: { createdPlaylists: insertInfo.insertedId.toString() } },
         { returnOriginal: false } 
     );
-    
     return insertInfo.insertedId.toString();
-
 }

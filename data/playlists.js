@@ -39,7 +39,7 @@ export const remove = async (playlistID) => {
     const deletionInfo = await playlistCollection.findOneAndDelete({_id: new ObjectId(playlistID)});
   
     if (!deletionInfo) { throw `Could not delete product with id of ${playlistID}`;}
-    return `${deletionInfo.title} has been successfully deleted!`;
+    return deletionInfo.title;
   };
 
 export const getPlaylistJSON = async (arr, accessToken) => {
@@ -52,4 +52,49 @@ export const getPlaylistJSON = async (arr, accessToken) => {
     }
   });
   return response.data.tracks;
+}
+
+export const addPlaylistToSpotify = async(accessToken, userID, playlistdescription, playlistName, isPublic) => {
+
+  let headers = {
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json'
+    }
+  };
+
+  let body = {
+    name: playlistName,
+    description: playlistdescription,
+    public: isPublic
+  };
+ 
+  
+  try{
+    let response = await axios.post(`https://api.spotify.com/v1/users/${userID}/playlists`, body, headers);
+    return response.data
+  }catch(e){
+    throw{e};
+  }
+
+
+
+}
+export const populatePlaylist = async(accessToken, tracks, playlistID) =>{
+  let headers = {
+    headers:{
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json'
+    }
+  };
+  let body = {
+    uris: tracks
+  };
+
+  try{
+    let response = await axios.post(`https://api.spotify.com/v1/playlists/${playlistID}/tracks`,body,headers);
+    return response.data;
+  }catch(e){
+    throw{e}
+  }
 }

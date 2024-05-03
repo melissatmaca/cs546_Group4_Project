@@ -81,3 +81,13 @@ export function checkPassword(password){
   return password.trim();
 };
 
+export const getRandomColors = (numColors) =>{
+  const colors = [];
+    while (colors.length < numColors) {
+        let newColor = '#' + Math.floor(Math.random() * 16777215).toString(16);
+        if (!colors.includes(newColor)) {
+          colors.push(newColor);
+      }
+    }
+    return colors;
+};
