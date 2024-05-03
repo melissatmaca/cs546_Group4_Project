@@ -4,7 +4,7 @@ import {ObjectId} from 'mongodb';
 const router = Router();
 
 import * as PG from '../data/playlistGeneration.js'
-import {get, getAll, getAllPosted, remove, getPlaylistJSON} from '../data/playlists.js' 
+import {get, getAll, getAllPosted, remove, getPlaylistJSON, addPlaylistToSpotify, populatePlaylist} from '../data/playlists.js' 
 import { playlists, users } from '../config/mongoCollections.js';
 
 import * as helper from '../helpers.js';
@@ -156,6 +156,26 @@ try{
       return res.status(404).json({error: e});
     }
   });
+
+  router.post('/saveplaylist',async (req,res) => {
+    let accessToken = req.body.accessToken
+    let userID = req.body.userID
+    let playlistName = req.body.name
+    let description = req.body.description
+    let tracks = req.body.tracks
+    let isPublic = req.body.isPublic
+
+    try{
+      let newSpotifyPlaylist = await addPlaylistToSpotify(accessToken,userID,description, playlistName, isPublic);
+      let newPlaylistID = newSpotifyPlaylist.id;
+
+      let populateNewSpotifyPlaylist = await populatePlaylist(accessToken,tracks,newPlaylistID,)
+      return newSpotifyPlaylist + populateNewSpotifyPlaylist;
+    }catch(e){
+      return res.status(500).json("error: " + e)
+    }
+  })
+
 
   // social feed routes
   router
