@@ -45,7 +45,7 @@ export function checkPassword(password){
 
 // Handling register
 
-let regForm = document.getElementById("signup-form");
+let regForm = document.getElementById("register-form");
 
 if(regForm) {
 
@@ -62,6 +62,7 @@ if(regForm) {
         let passwordErr = document.getElementById("pswdError");
         let confirmPassword = document.getElementById("confirmPassword");
         let conPassErr = document.getElementById("pswdNotConfirmed");
+        let confirmAge = document.getElementById("confirmAge");
 
         event.preventDefault();
         let submitAllowed = true;
@@ -107,8 +108,8 @@ if(regForm) {
         }
 
         try{
-            passwd.value = checkPassword(passwd.value);
-            pwdErr.hidden = true;
+            password.value = checkPassword(password.value);
+            passwordErr.hidden = true;
         } catch(e){
             password.value = "";
             passwordErr.innerHTML = e;
@@ -125,6 +126,12 @@ if(regForm) {
             conPassErr.innerHTML = e;
             conPassErr.hidden = false;
             submitAllowed = false;
+        }
+
+        if(confirmAge.checked){
+            submitAllowed = true
+        } else {
+            throw `Please confirm your age.`;
         }
 
         if(submitAllowed){
