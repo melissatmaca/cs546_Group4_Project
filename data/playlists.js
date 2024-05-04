@@ -61,31 +61,43 @@ export const getPlaylistJSON = async (arr, accessToken) => {
   return response.data.tracks;
 }
 
-export const addPlaylistToSpotify = async(accessToken, userID, playlistdescription, playlistName, isPublic) => {
+export const getSpotifyID = async(accessToken) => {
+try{
+    let userInfo = await axios.get(`https://api.spotify.com/v1/me`,
+      {headers:{
+        'Authorization' : `Bearer ${accessToken}`,
+      }}
+    );
+    if(!userInfo){
+      throw "could not fetch user info"
+      }
+      let spotifyUserid=userInfo.data.id;
+    return spotifyUserid;
+}catch(e){
+  throw e
+}};
 
-  let headers = {
+export const addPlaylistToSpotify = async(accessToken, spotifyUserid, playlistdescription, playlistName) => {
+try{
+
+  
+    let response = await axios.post(`https://api.spotify.com/v1/users/${spotifyUserid}/playlists`, 
+    { 
+    'name': playlistName,
+    'description': playlistdescription,
+    'public': false
+    },
+    {
     headers: {
       'Authorization': `Bearer ${accessToken}`,
       'Content-Type': 'application/json'
     }
-  };
-
-  let body = {
-    name: playlistName,
-    description: playlistdescription,
-    public: isPublic
-  };
- 
-  
-  try{
-    let response = await axios.post(`https://api.spotify.com/v1/users/${userID}/playlists`, body, headers);
-    return response.data
+    });
+    console.log(response.data)
+    return response.data.id
   }catch(e){
     throw{e};
   }
-
-
-
 }
 export const populatePlaylist = async(accessToken, tracks, playlistID) =>{
   let headers = {
@@ -99,7 +111,16 @@ export const populatePlaylist = async(accessToken, tracks, playlistID) =>{
   };
 
   try{
-    let response = await axios.post(`https://api.spotify.com/v1/playlists/${playlistID}/tracks`,body,headers);
+    let response = await axios.post(`https://api.spotify.com/v1/playlists/${playlistID}/tracks`,
+    {
+      uris: tracks
+    },
+    {
+      headers:{
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      }
+    });
     return response.data;
   }catch(e){
     throw{e}

@@ -4,7 +4,7 @@ const router = Router();
 import {ObjectId} from 'mongodb'; 
 
 import * as PG from '../data/playlistGeneration.js'
-import {get, getAll, getAllPosted, remove, getPlaylistJSON} from '../data/playlists.js' 
+import {get, getAll, getAllPosted, remove, getPlaylistJSON, addPlaylistToSpotify, populatePlaylist, getSpotifyID} from '../data/playlists.js' 
 import { playlists, users } from '../config/mongoCollections.js';
 
 import * as helper from '../helpers.js';
@@ -156,8 +156,36 @@ try{
       let deletedPlaylist = await remove(req.params.id.trim(), req.session.user.username);
       res.render('delete', {title: 'Deleted Playlist', loggedIn: true, playlist: deletedPlaylist});
     } catch (e) {
-      console.log(e);
+
       return res.status(404).json({error: e});
+    }
+  })
+  router
+  .route('/spotify/:id')
+  .post(async (req, res) => {
+    let userSpotifyID=null;
+    let SpotifyPlaylistID=null;
+    try{
+      let userInfo = await getSpotifyID(req.session.user.accessToken);
+      userSpotifyID = userInfo;
+    }catch(e){
+      console.log(e)
+      return res.status(400).json({error: e});
+    }
+
+
+    try {
+      let playlistInfo = await get(req.params.id);
+      let savedPlaylist = await addPlaylistToSpotify(req.session.user.accessToken,userSpotifyID,playlistInfo.caption, playlistInfo.title);
+      let SpotifyPlaylistID = savedPlaylist;
+    }catch(e){
+      return res.status(500).json({error: e});
+    }
+    try {
+      let playlistInfo = await get(req.params.id);
+      let filledPlaylist = await populatePlaylist(req.session.user.accessToken,playlistInfo.tracks, SpotifyPlaylistID);
+    } catch (error) {
+      return res.status(500).json({error: error});
     }
   })
 
@@ -329,7 +357,7 @@ router.route('/register')
 router.route('/authorize').get(async(req, res) => {
 
   const state = helper.generateRandomString();
-  const scope = 'user-read-private user-read-email user-top-read';
+  const scope = 'user-read-private user-read-email user-top-read playlist-modify-private playlist-modify-public';
   const client_id = process.env.CLIENT_ID;
   const redirect_uri = 'http://localhost:3000/accessToken';
   const client_secret = process.env.CLIENT_SECRET;
