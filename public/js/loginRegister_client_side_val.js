@@ -45,7 +45,7 @@ export function checkPassword(password){
 
 // Handling register
 
-let regForm = document.getElementById("signup-form");
+let regForm = document.getElementById("register-form");
 
 if(regForm) {
 
