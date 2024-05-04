@@ -56,9 +56,9 @@
                         {{#each createdPlaylists}}
                             <div class="playlistCard">
                                 <h3>{{this.title}}</h3>
-                                <p>{{this.caption}}</p>
+                                <p class="playlistText">{{this.caption}}</p>
                                 {{#if posted}}
-                                <p>Likes: {{this.likes}}</p>
+                                <p class="playlistText">Likes: {{this.likes.length}}</p>
                                 {{/if}}
                                 <a href="/playlist/{{this._id}}">View Playlist</a>
                             </div>
@@ -73,9 +73,9 @@
                         {{#each likedPlaylists}}
                             <div class="playlistCard">
                                 <h3>{{this.title}}</h3>
-                                <p>{{this.caption}}</p>
+                                <p class="playlistText">{{this.caption}}</p>
                                 {{#if posted}}
-                                <p>Likes: {{this.likes}}</p>
+                                <p class="playlistText">Likes: {{this.likes.length}}</p>
                                 {{/if}}
                                 <a href="/playlist/{{this._id}}">View Playlist</a>
                             </div>

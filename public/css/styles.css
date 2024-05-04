@@ -318,6 +318,9 @@ body.del-page {
   flex-direction: column;
   width: 100%;
 }
+.playlistText {
+  color: black;
+}
 #createdPlaylists h2, #likedPlaylists h2{
   color: white;
   align-self: center;
