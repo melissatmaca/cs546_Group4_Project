@@ -4,7 +4,7 @@ const router = Router();
 import {ObjectId} from 'mongodb'; 
 
 import * as PG from '../data/playlistGeneration.js'
-import {get, getAll, getAllPosted, remove, getPlaylistJSON, addPlaylistToSpotify, populatePlaylist, getSpotifyID} from '../data/playlists.js' 
+import {get, getAllPosted, remove, getPlaylistJSON, addPlaylistToSpotify, populatePlaylist, getSpotifyID, changePost} from '../data/playlists.js' 
 import { playlists, users } from '../config/mongoCollections.js';
 
 import * as helper from '../helpers.js';
@@ -91,9 +91,30 @@ try{
     res.render('generator', {title:"generator", Error: e, loggedIn: true})
     console.log(e);
   }
-  });  
+  });
 
+  router
+  .route('/playlist/post/:id')
+  .post(async (req, res) => {
+    let playlistID;
+    try {
+      playlistID = req.params.id;
+      if (!playlistID) throw 'You must provide an id to search for';
+      if (typeof playlistID !== 'string') throw 'Id must be a string';
+      playlistID = playlistID.trim();
+      if (playlistID.length === 0) throw 'id cannot be an empty string or just spaces';
+      if (!ObjectId.isValid(playlistID)) throw "Not Valid ID";
+    } catch (e) {
+      return res.status(400).json({error: e});
+    }
 
+    try {
+      await changePost(playlistID);
+    } catch (error) {
+      return res.status(400).json({error: error});
+    }
+    res.redirect(`/playlist/${playlistID}`);
+  })
 
   router
   .route('/playlist/:id')
@@ -112,7 +133,7 @@ try{
     }
     
     //try getting the post by ID
-    let playlist, playlistData, playlistTitle, ownerName, caption, isOwner, id;
+    let playlist, playlistData, playlistTitle, ownerName, caption, isOwner, posted;
     try {
       playlist = await get(req.params.id.trim());
     } catch (e) {
@@ -124,6 +145,12 @@ try{
       ownerName = playlist.userName;
       caption = playlist.caption;
       isOwner = (req.session.user.id == playlist.userID);
+      if(playlist.posted){
+        posted = "Unpost Playlist";
+      }
+      else{
+        posted = "Post Playlist";
+      }
     } catch(e){
       //console.log(e);
       return res.status(404).json({error: e});
@@ -136,7 +163,8 @@ try{
       isOwner,
       playlistID,
       loggedIn: true, 
-      title: playlistTitle
+      title: playlistTitle,
+      posted
   });
   })
   .post(async (req, res) => {

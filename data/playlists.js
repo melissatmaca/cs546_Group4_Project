@@ -24,7 +24,7 @@ export const get = async (playlistID) => {
   if (!ObjectId.isValid(playlistID)) throw 'invalid object ID';
   const playlistCollection = await c.playlists();
   const playlist = await playlistCollection.findOne({_id: new ObjectId(playlistID)});
-  if (!playlist) throw 'No product with that id';
+  if (!playlist) throw 'No playlist with that id';
   playlist._id = playlist._id.toString();
   return playlist;
 };
@@ -48,6 +48,24 @@ export const remove = async (playlistID, username) => {
     if (!deletionInfo) { throw `Could not delete product with id of ${playlistID}`;}
     return deletionInfo.title;
   };
+
+export const changePost = async (playlistID) => {
+    if (!playlistID) throw 'You must provide an id to search for';
+    if (typeof playlistID !== 'string') throw 'Id must be a string';
+    if (playlistID.trim().length === 0) throw 'id cannot be an empty string or just spaces';
+    playlistID = playlistID.trim();
+    if (!ObjectId.isValid(playlistID)) throw 'invalid object ID';
+    const playlistCollection = await c.playlists();
+    const playlist = await playlistCollection.findOne({_id: new ObjectId(playlistID)});
+    if (!playlist) throw 'No playlist with that id';
+    const updatedPosted = !playlist.posted;
+
+    const updateResult = await playlistCollection.updateOne(
+        { _id: new ObjectId(playlistID) },
+        { $set: { posted: updatedPosted } }
+    );
+  };
+
 
 export const getPlaylistJSON = async (arr, accessToken) => {
   const response = await axios.get('https://api.spotify.com/v1/tracks', {
@@ -107,8 +125,6 @@ export const populatePlaylist = async(accessToken, tracks, playlistID) =>{
     //   tracks[i] = 'spotify:track:' + tracks[i] +',';
     // }
   }
-
-  console.log(tracks);
   try{
     let response = await axios.post(`https://api.spotify.com/v1/playlists/${playlistID}/tracks`,
     {
@@ -125,3 +141,4 @@ export const populatePlaylist = async(accessToken, tracks, playlistID) =>{
     throw{e}
   }
 }
+

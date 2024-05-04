@@ -285,6 +285,7 @@ body.del-page {
 #createdPlaylists a:hover{
   text-decoration: underline;
 }
-.added-page{
+.added-page h1{
   color:rgb(0, 167, 75);
+  margin-left: 20px;
 }
