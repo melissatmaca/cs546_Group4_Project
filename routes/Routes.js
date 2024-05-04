@@ -182,12 +182,12 @@ try{
     }catch(e){
       return res.status(500).json({error: e});
     }
-    try {
-      let playlistInfo = await get(req.params.id);
-      let filledPlaylist = await populatePlaylist(req.session.user.accessToken,playlistInfo.tracks, SpotifyPlaylistID);
-    } catch (error) {
-      return res.status(500).json({error: error});
-    }
+    // try {
+    //   let playlistInfo = await get(req.params.id);
+    //   let filledPlaylist = await populatePlaylist(req.session.user.accessToken,playlistInfo.tracks, SpotifyPlaylistID);
+    // } catch (error) {
+    //   return res.status(500).json({error: error});
+    // }
   })
 
   // social feed routes
