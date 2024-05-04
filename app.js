@@ -33,7 +33,7 @@ app.use('/', (req, res, next) =>{
           return res.redirect('/login'); 
       }
   }else{
-      if (req.originalUrl === '/login' || req.originalUrl === '/register' || req.originalUrl === '/' || req.originalUrl === '/playlist/') {
+      if (req.originalUrl === '/login' || req.originalUrl === '/register' || req.originalUrl === '/' || req.originalUrl === '/playlist/' || req.originalUrl === '/spotify/') {
             return res.redirect('/feed');
       }else{
           next();
