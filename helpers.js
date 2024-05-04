@@ -37,7 +37,7 @@ export const checkComment = (str, strName = undefined) => {
 };
 
 export function checkString(str, strName){
-  if(!str || typeof str !== 'string'|| str.trim().length === 0) throw `${strName} must be non-empty string.`;
+  if(!str || typeof str !== 'string'|| str.trim().length === 0) throw `${strName} must be a non-empty string.`;
   return str.trim();
 }
 
@@ -57,7 +57,7 @@ export function checkUsername(username){
   let space = /\s/; // no spaces allowed
   if(space.test(username)) throw "Username cannot have spaces.";
 
-  if(username.trim().length < 5 || username.trim().length > 20) throw `Username has to be between 5 to 20 characters.`;
+  if(username.trim().length < 5 || username.trim().length > 20) throw `Username must be between 5 to 20 characters.`;
 
   return username.trim();
 };
