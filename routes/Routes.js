@@ -165,7 +165,7 @@ try{
   .route('/spotify/:id')
   .post(async (req, res) => {
     let userSpotifyID=null;
-    let SpotifyPlaylistID=null;
+    
     try{
       let userInfo = await getSpotifyID(req.session.user.accessToken);
       userSpotifyID = userInfo;
@@ -174,20 +174,24 @@ try{
       return res.status(400).json({error: e});
     }
 
-
+    let SpotifyPlaylistID=null;
     try {
       let playlistInfo = await get(req.params.id);
       let savedPlaylist = await addPlaylistToSpotify(req.session.user.accessToken,userSpotifyID,playlistInfo.caption, playlistInfo.title);
-      let SpotifyPlaylistID = savedPlaylist;
+      SpotifyPlaylistID = savedPlaylist;
+
     }catch(e){
       return res.status(500).json({error: e});
     }
-    // try {
-    //   let playlistInfo = await get(req.params.id);
-    //   let filledPlaylist = await populatePlaylist(req.session.user.accessToken,playlistInfo.tracks, SpotifyPlaylistID);
-    // } catch (error) {
-    //   return res.status(500).json({error: error});
-    // }
+
+
+    try {
+      let playlistInfo = await get(req.params.id);
+      let filledPlaylist = await populatePlaylist(req.session.user.accessToken,playlistInfo.tracks, SpotifyPlaylistID);
+    } catch (error) {
+      return res.status(500).json({error: error});
+    }
+    res.render('./playlistadded', {loggedIn: true})
   })
 
   // social feed routes

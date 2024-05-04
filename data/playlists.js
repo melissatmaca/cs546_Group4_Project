@@ -1,5 +1,5 @@
 import * as c from "../config/mongoCollections.js";
-import axios from 'axios';
+import axios, { all } from 'axios';
 import {ObjectId} from 'mongodb';
 
 export const getAll = async () => {
@@ -93,23 +93,22 @@ try{
       'Content-Type': 'application/json'
     }
     });
-    console.log(response.data)
     return response.data.id
   }catch(e){
     throw{e};
   }
 }
 export const populatePlaylist = async(accessToken, tracks, playlistID) =>{
-  let headers = {
-    headers:{
-      'Authorization': `Bearer ${accessToken}`,
-      'Content-Type': 'application/json'
-    }
-  };
-  let body = {
-    uris: tracks
-  };
 
+  for(let i =0; i <tracks.length; i++){
+    // if(i==tracks.length-1){
+    tracks[i] = 'spotify:track:' + tracks[i];
+    // }else{
+    //   tracks[i] = 'spotify:track:' + tracks[i] +',';
+    // }
+  }
+
+  console.log(tracks);
   try{
     let response = await axios.post(`https://api.spotify.com/v1/playlists/${playlistID}/tracks`,
     {
