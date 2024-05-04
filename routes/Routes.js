@@ -25,7 +25,7 @@ router.route('/').get(async (req, res) => {
 
 router.route('/generator')
   .get(async (req, res) => {
-    res.render('generator', {title: "generator", loggedIn: true});
+    res.render('generator', {title: "Generator", loggedIn: true});
   })
   .post(async (req, res) => {
     //code here for POST
@@ -206,7 +206,7 @@ try{
       return res.status(400).json({error: e});
     }
     // if we get the feed, render socialFeed
-    res.render('./socialFeed', {playlists:feed, script_partial:'like_and_comment_ajax', loggedIn: true});
+    res.render('./socialFeed', {title: 'Social Feed', playlists:feed, script_partial:'like_and_comment_ajax', loggedIn: true});
   })
 
     // AJAX routes for like and comment
@@ -293,7 +293,7 @@ router.route('/register')
       if (req.session.user){
           res.redirect('/authorize');
         } else{
-          res.render('register');
+          res.render('register', {title: 'Register'});
         }
   })
   .post(async(req, res) => {
@@ -331,7 +331,7 @@ router.route('/register')
       if (req.session.user){
         res.redirect('/authorize');
       } else{
-        res.render('login');
+        res.render('login', {title: 'Login'});
       };
   })
   .post(async(req, res) => {
@@ -435,7 +435,7 @@ router.route('/accessToken').get( async (req, res) => {
       createdPlaylists = await analytics.getCreatedPlaylists(req.session.user.username);
       genreBreakdown = await analytics.getGenreBreakdown(req.session.user.accessToken);
     }catch(e){
-      return res.status(500).json({error: `${e || `Internal Server Error`}`});
+      return res.status(500).render('./profile', {error: "Error: Unable to load profile, please refresh and try again.", loggedIn: true});
     }
 
     const labels = Object.keys(genreBreakdown);
