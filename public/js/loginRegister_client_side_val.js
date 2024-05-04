@@ -19,7 +19,7 @@ export function checkUsername(username){
     let space = /\s/; // no spaces allowed
     if(space.test(username)) throw "Username cannot have spaces.";
   
-    if(username.trim().length < 5 || username.trim().length > 20) throw `Username has to be between 5 to 20 characters.`;
+    if(username.trim().length < 5 || username.trim().length > 20) throw `Username must be be between 5 to 20 characters.`;
   
     return username.trim();
 };

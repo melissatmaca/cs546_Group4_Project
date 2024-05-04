@@ -23,6 +23,18 @@ body {
   font-family: sans-serif;
 }
 
+p{
+  color: white;
+}
+
+ol{
+  color: white;
+}
+
+label{
+  color: white;
+}
+
 .navigation-bar {
   display: flex;
   flex-direction: column;
