@@ -5,9 +5,11 @@
     <title>{{title}}</title>
     <link rel='stylesheet' href='/public/css/styles.css'/>
 </head>
-<header>
+
+<body>
+    <header>
      <nav class="navigation-bar">
-        <img class="logo" src="public/images/White.png">
+        <img class="logo" src="../../public/images/White.png" alt="Audio Ave Logo">
         {{#if loggedIn}}
             <ul>
                 <li><a href="/feed">Social Feed</a></li>
@@ -16,8 +18,7 @@
             </ul>
          {{/if}}
     </nav>
-</header>
-<body>
+    </header>
     <main>
         {{{body}}}
         <script src="/public/js/loginRegister_client_side_validation.js"></script>
