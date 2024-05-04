@@ -135,17 +135,17 @@ export const getCreatedPlaylists = async (username) => {
 
 // Get these from the database
 export const getLikedPlaylists = async (username) => {
-    // const userCollection = await users();
-    // const user = await userCollection.findOne({username: username});
+    const userCollection = await users();
+    const user = await userCollection.findOne({username: username});
 
-    // if(!user) throw 'Error: no user with taht username exists';
+    if(!user) throw 'Error: no user with that username exists';
+    
+    let usersPlaylists = [];
+    for(let playlistId of user.likedPlaylists){
+        const playlistCollection = await playlists();
+        const playlist = await playlistCollection.findOne({_id: new ObjectId(playlistId)});
+        usersPlaylists.push(playlist);
+    }
 
-    // let usersPlaylists = [];
-    // for(let playlistId of user.likedPlaylists){
-    //     const playlistCollection = await playlists();
-    //     const playlist = await playlistCollection.findOne({_id: new ObjectId(playlistId)});
-    //     usersPlaylists.push(playlist);
-    // }
-
-    // return usersPlaylists;
+    return usersPlaylists;
 };

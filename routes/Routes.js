@@ -25,7 +25,7 @@ router.route('/').get(async (req, res) => {
 
 router.route('/generator')
   .get(async (req, res) => {
-    res.render('generator', {title: "generator", loggedIn: true});
+    res.render('generator', {title: "Generator", loggedIn: true});
   })
   .post(async (req, res) => {
     //code here for POST
@@ -233,8 +233,16 @@ try{
       console.log(e);
       return res.status(400).json({error: e});
     }
-    // if we get the feed, render socialFeed
-    res.render('./socialFeed', {playlists:feed, script_partial:'like_and_comment_ajax', loggedIn: true});
+    // get the tracks with these IDs, limited up to 5 (to not "clog" the feed)
+    let fullFeed = undefined;
+    try {
+      // async allows me to call getPlaylistJSON
+      // ... preserves the keys and data of feed as we copy it over to fullFeed
+      fullFeed = feed.map(async playlist => ({...playlist, trackData: await getPlaylistJSON(playlist.tracks.slice(0,5), req.session.user.accessToken)}))
+    } catch(e) {
+      return res.status(400).json({error: e});
+    }
+    res.render('./socialFeed', {playlists:fullFeed, script_partial:'like_and_comment_ajax'});
   })
 
     // AJAX routes for like and comment
@@ -321,7 +329,7 @@ router.route('/register')
       if (req.session.user){
           res.redirect('/authorize');
         } else{
-          res.render('register');
+          res.render('register', {title: 'Register'});
         }
   })
   .post(async(req, res) => {
@@ -359,12 +367,12 @@ router.route('/register')
       if (req.session.user){
         res.redirect('/authorize');
       } else{
-        res.render('login');
+        res.render('login', {title: 'Login'});
       };
   })
   .post(async(req, res) => {
       let userData = req.body;
-      if (!userData || Object.keys(userData).length !== 3){
+      if (!userData || Object.keys(userData).length !== 2){
           return res.status(400).render('login', {error: "All fields need to be supplied."});
       };
 
@@ -463,7 +471,7 @@ router.route('/accessToken').get( async (req, res) => {
       createdPlaylists = await analytics.getCreatedPlaylists(req.session.user.username);
       genreBreakdown = await analytics.getGenreBreakdown(req.session.user.accessToken);
     }catch(e){
-      return res.status(500).json({error: `${e || `Internal Server Error`}`});
+      return res.status(500).render('./profile', {error: "Error: Unable to load profile, please refresh and try again.", loggedIn: true});
     }
 
     const labels = Object.keys(genreBreakdown);

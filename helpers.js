@@ -51,6 +51,7 @@ export function checkEmail(email){
   return email.trim();
 };
 
+
 export function checkUsername(username){
   if(!checkString(username, "Username"));
 

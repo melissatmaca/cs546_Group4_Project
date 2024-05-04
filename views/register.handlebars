@@ -8,11 +8,6 @@
 </ol>
 </div>
 
-{{#if error}}
-<div class="errorDiv">
-    {{{error}}}
-</div>
-{{/if}}
 <form id="register-form" name="register-form" action="/register" method="POST">
        <div>
             <label for="firstName">First Name:</label>
@@ -48,6 +43,11 @@
             <label for="confirmPassword">Confirm Password:</label>
             <input type="password" id="confirmPassword" name="confirmPassword">
             <p id="pswdNotConfirmed"></p>
+        </div>
+
+        <div class="checkbox">
+            <label for="confirmAge"><input type="checkbox" id="age_confirm"> I confirm that I am at least 13 years of age</label>
+            <p id="confirmAgeError"></p>
         </div>
 
 

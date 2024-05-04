@@ -1,75 +1,90 @@
 <div id="profileMainContainer">
-<h1 id="usernameHeader">Hello, {{username}}!</h1>
 
-    <section id="dashboardContainer">
-        <div id="dashboardTitle">
-            <h2>Spotify Analytics Dashboard</h2>
-        </div>
-        <div id="dashboardHeader">
-            <h2>Spotify Username:</h2>
-            <p>{{spotifyUsername}}</p>
-        </div>
-        <div id="dashboardCardContainer">
-            <div id="leftSideDashboard">
-                <div id="numFollowersCard" class="analyticsCard">
-                    <h2 class="analyticsCardTitle">Number of Spotify Followers:</h2>
-                    <p>{{numFollowers}}</p>
+{{#if error}}
+    <p class="error">{{error}}</p>
+{{else}}
+    <h1 id="usernameHeader">Hello, {{username}}!</h1>
+
+        <section id="dashboardContainer">
+            <div id="dashboardTitle">
+                <h2>Spotify Analytics Dashboard</h2>
+            </div>
+            <div id="dashboardHeader">
+                <h2>Spotify Username:</h2>
+                <p>{{spotifyUsername}}</p>
+            </div>
+            <div id="dashboardCardContainer">
+                <div id="leftSideDashboard">
+                    <div id="numFollowersCard" class="analyticsCard">
+                        <h2 class="analyticsCardTitle">Number of Spotify Followers:</h2>
+                        <p id="numFollowers">{{numFollowers}}</p>
+                    </div>
+                    
+                        <div id="topItemsContainer">
+                            <div id="topTracksCard" class="analyticsCard">
+                                <h2 class="analyticsCardTitle">Top Tracks:</h2>
+                                <ol class="topList">
+                                {{#each topTracks}}
+                                    <li class="topItems">{{this}}</li>
+                                {{/each}}
+                                </ol>
+                            </div>
+
+                            <div id="topArtistsCard" class="analyticsCard">
+                                <h2 class="analyticsCardTitle">Top Artists:</h2>
+                                <ol class="topList">
+                                {{#each topArtists}}
+                                    <li class="topItems">{{this}}</li>
+                                {{/each}}
+                                </ol>
+                            </div>
+                        </div>
                 </div>
                 
-                    <div id="topItemsContainer">
-                        <div id="topTracksCard" class="analyticsCard">
-                            <h2 class="analyticsCardTitle">Top Tracks:</h2>
-                            <ol class="topList">
-                            {{#each topTracks}}
-                                <li class="topItems">{{this}}</li>
-                            {{/each}}
-                            </ol>
-                        </div>
-
-                        <div id="topArtistsCard" class="analyticsCard">
-                            <h2 class="analyticsCardTitle">Top Artists:</h2>
-                            <ol class="topList">
-                            {{#each topArtists}}
-                                <li class="topItems">{{this}}</li>
-                            {{/each}}
-                            </ol>
-                        </div>
-                    </div>
+                <div id="genreCard" class="analyticsCard">
+                    <h2 class="analyticsCardTitle">Genre Breakdown:</h2>
+                    <img src="{{genres}}" alt="Genre Breakdown Pie Chart">
+                </div>
             </div>
             
-            <div id="genreCard" class="analyticsCard">
-                <h2 class="analyticsCardTitle">Genre Breakdown:</h2>
-                <img src="{{genres}}" alt="Genre Breakdown Pie Chart">
-            </div>
-        </div>
-        
-    </section>
+        </section>
 
-    <section id="playlistsContainer">
-        <div id="playlistSelector">
-            <div id="likedPlaylists">
-
-
-            </div>
-            <div id="createdPlaylists">
-                <h2>Your Generated Playlists</h2>
-                {{#each createdPlaylists}}
-                    <h3>{{this.title}}</h3>
-                    <p>{{this.caption}}</p>
-                    {{#if posted}}
-                    <p>Likes: {{this.likes}}</p>
+        <section id="playlistsContainer">            
+                <div id="createdPlaylists">
+                    <h2>Generated Playlists</h2>
+                    {{#if createdPlaylists.length}}
+                        {{#each createdPlaylists}}
+                            <div class="playlistCard">
+                                <h3>{{this.title}}</h3>
+                                <p>{{this.caption}}</p>
+                                {{#if posted}}
+                                <p>Likes: {{this.likes}}</p>
+                                {{/if}}
+                                <a href="/playlist/{{this._id}}">View Playlist</a>
+                            </div>
+                        {{/each}}
+                    {{else}}
+                        <p class="noPlaylistsMessage">You have not generated any playlists yet.</p>
                     {{/if}}
-                    <ul>
-                    {{#each this.tracks}}
-                        <li>{{this}}</li>
-                    {{/each}}
-                    </ul>
-                    <a href="/playlist/{{this._id}}">View Playlist</a>
-                {{/each}}
+                </div>
+                <div id="likedPlaylists">
+                    <h2>Liked Playlists</h2>
+                    {{#if likedPlaylists.length}}
+                        {{#each likedPlaylists}}
+                            <div class="playlistCard">
+                                <h3>{{this.title}}</h3>
+                                <p>{{this.caption}}</p>
+                                {{#if posted}}
+                                <p>Likes: {{this.likes}}</p>
+                                {{/if}}
+                                <a href="/playlist/{{this._id}}">View Playlist</a>
+                            </div>
+                        {{/each}}
+                    {{else}}
+                        <p class="noPlaylistsMessage">You have not liked any playlists yet.</p>
+                    {{/if}}
 
-            </div>
-
-        </div>
-    </section>
-
+                </div>
+        </section>
+{{/if}}
 </div>
