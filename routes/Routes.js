@@ -344,7 +344,7 @@ router.route('/register')
   })
   .post(async(req, res) => {
       let userData = req.body;
-      if (!userData || Object.keys(userData).length !== 3){
+      if (!userData || Object.keys(userData).length !== 2){
           return res.status(400).render('login', {error: "All fields need to be supplied."});
       };
 

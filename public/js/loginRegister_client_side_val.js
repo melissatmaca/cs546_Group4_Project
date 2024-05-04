@@ -1,9 +1,9 @@
-export function checkString(str, strName){
+function checkString(str, strName){
     if(!str || typeof str !== 'string'|| str.trim().length === 0) throw `${strName} must be non-empty string.`;
     return str.trim();
 };
   
-export function checkEmail(email){
+function checkEmail(email){
     if(!checkString(email, "Email"));
   
     let emailChar = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -13,7 +13,7 @@ export function checkEmail(email){
     return email.trim();
 };
   
-export function checkUsername(username){
+function checkUsername(username){
     if(!checkString(username, "Username"));
   
     let space = /\s/; // no spaces allowed
@@ -23,8 +23,7 @@ export function checkUsername(username){
   
     return username.trim();
 };
-  
-export function checkPassword(password){
+function checkPassword(password){
     if(typeof password !== 'string') throw 'Password must be a string.';
     if(password.trim().length === 0) throw  `Password cannot be empty spaces`;
     
@@ -62,7 +61,8 @@ if(regForm) {
         let passwordErr = document.getElementById("pswdError");
         let confirmPassword = document.getElementById("confirmPassword");
         let conPassErr = document.getElementById("pswdNotConfirmed");
-        let confirmAge = document.getElementById("confirmAge");
+        let confirmAge = document.getElementById("age_confirm");
+        let confirmAgeError = document.getElementById("confirmAgeError");
 
         event.preventDefault();
         let submitAllowed = true;
@@ -130,8 +130,11 @@ if(regForm) {
 
         if(confirmAge.checked){
             submitAllowed = true
+            confirmAgeError.hidden = true;
         } else {
-            throw `Please confirm your age.`;
+            confirmAgeError.innerHTML = 'You must confirm your age!';
+            confirmAgeError.hidden = false;
+            submitAllowed = false;
         }
 
         if(submitAllowed){

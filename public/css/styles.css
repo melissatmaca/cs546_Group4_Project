@@ -273,6 +273,9 @@ body.del-page {
 #topItemsContainer{
   display: flex;
 }
+.topItems, #numFollowers{
+  color: black;
+}
 
 #playlistsContainer{
   display: flex;
