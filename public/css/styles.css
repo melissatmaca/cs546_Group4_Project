@@ -93,6 +93,23 @@ label{
 .playlist-page form {
   margin-left: 20px;
 }
+.playlist-page .buttons{
+  display: flex;
+  justify-content:space-around;
+}
+
+.playlist-page .buttons button {
+  color: white;
+  background-color: rgb(28, 185, 84);
+  color: black;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 25px;
+  align-items:flex-end;
+}
+
 .track-list {
   display: flex;
   align-items: center;

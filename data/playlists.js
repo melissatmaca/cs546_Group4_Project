@@ -2,6 +2,7 @@ import * as c from "../config/mongoCollections.js";
 import axios, { all } from 'axios';
 import {ObjectId} from 'mongodb';
 
+
 export const getAll = async () => {
   const playlistCollection = await c.playlists();
   const playlistList = await playlistCollection.find({}).toArray();
@@ -65,7 +66,42 @@ export const changePost = async (playlistID) => {
         { $set: { posted: updatedPosted } }
     );
   };
+ 
+  export const changeLike = async (playlistID, userID) => {
+    if (!playlistID) throw 'You must provide an id to search for';
+    if (typeof playlistID !== 'string') throw 'Id must be a string';
+    if (playlistID.trim().length === 0) throw 'id cannot be an empty string or just spaces';
+    playlistID = playlistID.trim();
+    if (!ObjectId.isValid(playlistID)) throw 'invalid object ID';
+    const playlistCollection = await c.playlists();
+    const usersCollection = await c.users();
 
+    
+    const playlist = await playlistCollection.findOne({_id: new ObjectId(playlistID)});
+    if (!playlist) throw 'No playlist with that id';
+    if(playlist.likes.includes(userID)){
+      const updateResult = await playlistCollection.updateOne(
+        { _id: new ObjectId(playlistID) },
+        { $pull: { likes: userID} }
+      );
+      const user = await usersCollection.findOneAndUpdate(
+        { _id: new ObjectId(userID) },
+        { $pull: { likedPlaylists: playlistID} },
+        { returnOriginal: false } 
+      );
+    }
+    else{
+      const updateResult = await playlistCollection.updateOne(
+        { _id: new ObjectId(playlistID) },
+        { $push: { likes: userID} }
+      );
+      const user = await usersCollection.findOneAndUpdate(
+        { _id: new ObjectId(userID) },
+        { $push: { likedPlaylists: playlistID} },
+        { returnOriginal: false } 
+      );
+    }
+  };
 
 export const getPlaylistJSON = async (arr, accessToken) => {
   const response = await axios.get('https://api.spotify.com/v1/tracks', {

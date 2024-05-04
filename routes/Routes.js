@@ -1,10 +1,10 @@
-import {Router} from 'express';
+import e, {Router} from 'express';
 import * as socialData from "../data/social.js";
 const router = Router();
 import {ObjectId} from 'mongodb'; 
 
 import * as PG from '../data/playlistGeneration.js'
-import {get, getAllPosted, remove, getPlaylistJSON, addPlaylistToSpotify, populatePlaylist, getSpotifyID, changePost} from '../data/playlists.js' 
+import {get, changeLike, remove, getPlaylistJSON, addPlaylistToSpotify, populatePlaylist, getSpotifyID, changePost} from '../data/playlists.js' 
 import { playlists, users } from '../config/mongoCollections.js';
 
 import * as helper from '../helpers.js';
@@ -117,6 +117,28 @@ try{
   })
 
   router
+  .route('/playlist/like/:id')
+  .post(async (req, res) => {
+    let playlistID;
+    try {
+      playlistID = req.params.id;
+      if (!playlistID) throw 'You must provide an id to search for';
+      if (typeof playlistID !== 'string') throw 'Id must be a string';
+      playlistID = playlistID.trim();
+      if (playlistID.length === 0) throw 'id cannot be an empty string or just spaces';
+      if (!ObjectId.isValid(playlistID)) throw "Not Valid ID";
+    } catch (e) {
+      return res.status(400).json({error: e});
+    }
+    try {
+      await changeLike(playlistID, req.session.user.id);
+    } catch (error) {
+      return res.status(400).json({err: error});
+    }
+    res.redirect(`/playlist/${playlistID}`);
+  })
+
+  router
   .route('/playlist/:id')
   .get(async (req, res) => {
     let playlistID;
@@ -133,7 +155,7 @@ try{
     }
     
     //try getting the post by ID
-    let playlist, playlistData, playlistTitle, ownerName, caption, isOwner, posted;
+    let playlist, playlistData, playlistTitle, ownerName, caption, isOwner, posted, liked, likeCount;
     try {
       playlist = await get(req.params.id.trim());
     } catch (e) {
@@ -151,6 +173,12 @@ try{
       else{
         posted = "Post Playlist";
       }
+      if(playlist.likes.includes(req.session.user.id)){
+        liked = "Unlike Playlist";
+      }
+      else{
+        liked = "Like Playlsit";
+      }
     } catch(e){
       //console.log(e);
       return res.status(404).json({error: e});
@@ -164,7 +192,9 @@ try{
       playlistID,
       loggedIn: true, 
       title: playlistTitle,
-      posted
+      posted,
+      liked,
+      likeCount
   });
   })
   .post(async (req, res) => {
