@@ -214,7 +214,7 @@ try{
     } catch(e) {
       return res.status(400).json({error: e});
     }
-    res.render('./socialFeed', {playlists:fullFeed, script_partial:'like_and_comment_ajax'});
+    res.render('socialFeed', {playlists:fullFeed, script_partial:'like_and_comment_ajax'});
   })
 
     // AJAX routes for like and comment
