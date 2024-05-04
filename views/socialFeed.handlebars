@@ -5,6 +5,16 @@
             <a href="/playlist/{{this._id}}" class="fill-div"></a>
             <h2>{{this.title}}</h2>
             <p>{{this.caption}}</p>
+            <ol>
+                {{#each this.trackData}}
+                    <li class="track-list">
+                        <img src="{{album.images.[0].url}}" alt="{{album.name}} Cover" width="200">
+                        <h2>{{name}}</h2>
+                        <p>Artist: {{artists.[0].name}}</p>
+                        <p>Album: {{album.name}}</p>
+                    </li>
+                {{/each}}
+            </ol>
             <div class="social">
 				<button class="like-button" data-like-id="{{this._id}}-like">Like</button>
                 <span data-count-id="{{this._id}}-count">{{this.likes.length}}</span>

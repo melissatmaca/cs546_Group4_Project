@@ -205,8 +205,16 @@ try{
       console.log(e);
       return res.status(400).json({error: e});
     }
-    // if we get the feed, render socialFeed
-    res.render('./socialFeed', {title: 'Social Feed', playlists:feed, script_partial:'like_and_comment_ajax', loggedIn: true});
+    // get the tracks with these IDs, limited up to 5 (to not "clog" the feed)
+    let fullFeed = undefined;
+    try {
+      // async allows me to call getPlaylistJSON
+      // ... preserves the keys and data of feed as we copy it over to fullFeed
+      fullFeed = feed.map(async playlist => ({...playlist, trackData: await getPlaylistJSON(playlist.tracks.slice(0,5), req.session.user.accessToken)}))
+    } catch(e) {
+      return res.status(400).json({error: e});
+    }
+    res.render('./socialFeed', {playlists:fullFeed, script_partial:'like_and_comment_ajax'});
   })
 
     // AJAX routes for like and comment
