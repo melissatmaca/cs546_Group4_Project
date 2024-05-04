@@ -27,7 +27,7 @@ export const getRecomendations = async (genres, mood, limit, accessToken, title,
     // if(!genreList.includes(genres[0]) ||!genreList.includes(genres[1])){throw 'genres must be one of the given options'}
     if(typeof limit != 'number'){throw 'Limit Not Number'}
     if(limit < 1){throw 'Limit too small'}
-    if(limit >100){throw 'Limit must be maximum 100 songs'}
+    if(limit >50){throw 'Limit must be maximum 50 songs'}
     if(typeof title != 'string'){throw 'Title not string'}
     if(title.length < 1){throw 'Title too short'}
     if(title.length >36){throw 'Title must be maximum 36 characters'}
