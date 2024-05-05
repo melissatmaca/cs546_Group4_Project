@@ -27,11 +27,11 @@
                   	<p>{{this.postDate}}</p>
                 </div>
                 {{else}}
-                <p>Be the first to comment!</p>
+                <p id="{{this._id}}-no-comment">Be the first to comment!</p>
                 {{/each}}
                 <form>
                     <div class="comment-form">
-                      <textarea data-newcomment-id="{{this._id}}-new-comment">Write a comment...</textarea>
+                      <textarea data-newcomment-id="{{this._id}}-new-comment" placeholder="Write a comment..."></textarea>
                   </div>
                   <div class="comment-button">
                     <button type="submit" data-submitcomment-id="{{this._id}}-submit">Submit</button>
