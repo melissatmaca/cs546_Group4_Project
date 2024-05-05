@@ -553,7 +553,7 @@ router.route('/accessToken').get( async (req, res) => {
 
   router.route('/logout').get(async (req, res) => {
     req.session.destroy();
-    res.redirect('/login');
+    res.redirect('login');
   });
 
   export default router;

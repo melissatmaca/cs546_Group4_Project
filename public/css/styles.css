@@ -60,6 +60,11 @@ body{
   width: 100px;
   cursor: pointer;
   border: 4px black;
+  transition: transform .2s;
+}
+
+#login-form button:hover{
+  transform: scale(1.1);
 }
 
 #login-form .invalidCred{
@@ -178,10 +183,16 @@ body{
   background-color: #1ed760;
   border-radius: 30px;
   font-weight: bold;
-  padding: 20px;
+  padding: 25px;
   height: 48px;
   width: 100px;
   cursor: pointer;
+  border: 4px black;
+  transition: transform .2s;
+}
+
+#register-form button:hover{
+  transform: scale(1.1);
 }
 
 .registerBox p{
