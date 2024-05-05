@@ -37,8 +37,9 @@ export const remove = async (playlistID, username) => {
     playlistID = playlistID.trim();
     if (!ObjectId.isValid(playlistID)) throw 'invalid object ID';
     const playlistCollection = await c.playlists();
-    const deletionInfo = await playlistCollection.findOneAndDelete({_id: new ObjectId(playlistID)});
+    await remFromLiked(playlistID);
 
+    const deletionInfo = await playlistCollection.findOneAndDelete({_id: new ObjectId(playlistID)});
     const usersCollection = await c.users();
     const user = await usersCollection.findOneAndUpdate(
         { username:  username},
@@ -50,6 +51,31 @@ export const remove = async (playlistID, username) => {
     return deletionInfo.title;
   };
 
+export const remFromLiked = async (playlistID) => {
+  if (!playlistID) throw 'You must provide an id to search for';
+  if (typeof playlistID !== 'string') throw 'Id must be a string';
+  if (playlistID.trim().length === 0) throw 'id cannot be an empty string or just spaces';
+  playlistID = playlistID.trim();
+  if (!ObjectId.isValid(playlistID)) throw 'invalid object ID';
+  const playlistCollection = await c.playlists();
+  const usersCollection = await c.users();
+  
+  const playlist = await playlistCollection.findOne({_id: new ObjectId(playlistID)});
+  let likers = playlist.likes;
+  for(const userID of likers){
+    const user = await usersCollection.findOneAndUpdate(
+      { _id: new ObjectId(userID) },
+      { $pull: { likedPlaylists: playlistID} },
+      { returnOriginal: false } 
+    );
+  }
+
+  const updateResult = await playlistCollection.updateOne(
+    { _id: new ObjectId(playlistID) },
+    { $set: { likes: []} }
+  );
+}
+
 export const changePost = async (playlistID) => {
     if (!playlistID) throw 'You must provide an id to search for';
     if (typeof playlistID !== 'string') throw 'Id must be a string';
@@ -60,6 +86,9 @@ export const changePost = async (playlistID) => {
     const playlist = await playlistCollection.findOne({_id: new ObjectId(playlistID)});
     if (!playlist) throw 'No playlist with that id';
     const updatedPosted = !playlist.posted;
+    if(!updatedPosted){
+      await remFromLiked(playlistID);
+    }
 
     const updateResult = await playlistCollection.updateOne(
         { _id: new ObjectId(playlistID) },
