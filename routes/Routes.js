@@ -258,21 +258,26 @@ try{
   .get(async (req, res) => {
     let feed = undefined;
     try {
-      feed = socialData.getFeed();
+      feed = await socialData.getFeed();
+      feed = feed.reverse(); // reverse the page to get by most recently created
     } catch(e) {
       console.log(e);
       return res.status(400).json({error: e});
     }
     // get the tracks with these IDs, limited up to 5 (to not "clog" the feed)
-    let fullFeed = undefined;
+    let fullFeed = [];
     try {
-      // async allows me to call getPlaylistJSON
       // ... preserves the keys and data of feed as we copy it over to fullFeed
-      fullFeed = feed.map(async playlist => ({...playlist, trackData: await getPlaylistJSON(playlist.tracks.slice(0,5), req.session.user.accessToken)}))
+      let tracks = undefined;
+      for (let playlist of feed) {
+        tracks = await getPlaylistJSON(playlist.tracks.slice(0,5), req.session.user.accessToken);
+        fullFeed.push({...playlist, trackData:tracks});
+      }
+      //fullFeed = feed.map(playlist => ({...playlist, trackData: await getPlaylistJSON(playlist.tracks.slice(0,5), req.session.user.accessToken)}))
     } catch(e) {
       return res.status(400).json({error: e});
     }
-    res.render('./socialFeed', {playlists:fullFeed, script_partial:'like_and_comment_ajax'});
+    res.render('socialFeed', {playlists: fullFeed, loggedIn:true, title:"Social Feed"});
   })
 
     // AJAX routes for like and comment

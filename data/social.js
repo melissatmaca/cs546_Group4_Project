@@ -8,7 +8,7 @@ export const getFeed = async () => {
   const playlistsCollection = await c.playlists();
   if (!playlistsCollection) throw `Database not found`;
   let sharedPlaylists = await playlistsCollection
-    .find({ shared: true })
+    .find({ posted: true })
     .toArray();
   if (!sharedPlaylists) throw `Could not retrieve playlists`;
   // I'll get the first 5 tracks in each playlist later, probably in the routes before rendering a handlebar
@@ -44,7 +44,7 @@ export const addComment = async (comment, userId, playlistId) => {
   let commentObj = {
     _id: new ObjectId(),
     comment: comment,
-    author: user.userName,
+    author: user.username,
     postDate: datePosted,
   };
   // RENDER THE USERNAME AND A LINK TO THE COMMENTER'S ACCOUNT (if we don't store this in the comments subdoc)
