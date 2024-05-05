@@ -352,10 +352,10 @@ body.del-page {
 #social-media-title {
   color: #ffffff; /* Spotify green to match the theme */
   text-align: center; /* Center aligns the title */
-  font-size: 2em; /* A larger size for visibility */
-  font-weight: bold; /* Makes the text bold */
-  margin-top: 20px; /* Adds space above the title */
-  margin-bottom: 20px; /* Adds space below the title */
+  font-size: 2em; 
+  font-weight: bold; 
+  margin-top: 20px;
+  margin-bottom: 20px; 
 }
 /* Main container for playlists */
 #playlists {
