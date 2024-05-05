@@ -8,6 +8,12 @@
 </ol>
 </div>
 
+{{#if error}}
+<div class="errorDiv">
+    {{{error}}}
+</div>
+{{/if}}
+
 <form id="register-form" name="register-form" action="/register" method="POST">
        <div>
             <label for="firstName">First Name:</label>
