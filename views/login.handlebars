@@ -1,15 +1,16 @@
+ <section class="loginBox">
  <form id="login-form" method="POST" action="/login">
         <div id="loginUname">
-            <label for="username">Username:</label>
+            <label for="username">Username</label>
             <br>
-            <input type="text" id="username" name="username">
+            <input type="text" id="username" name="username" placeholder="Username">
             <p id="unameError"></p>
         </div>
         
         <div id="loginPass">
-            <label for="password">Password:</label>
+            <label for="password">Password</label>
             <br>
-            <input type="password" id="password" name="password">
+            <input type="password" id="password" name="password" placeholder="Password">
             <p id="pswdError"></p>
         </div>
         {{#if error}}
@@ -20,7 +21,7 @@
             <button type="submit" name="submitButton" id="submitButton">Login</button>
         </div>
     </form>
+    </section>
     <div class="regCont">
         <p><a href="/register">Click here to register!</a></p>
     </div>
-<script src="../public/js/loginRegister_client_side_val.js"></script>

@@ -1,10 +1,72 @@
 /* Make the background of each page have teh same background color */
 body{
-  background-color: rgb(25, 25, 25);
+  background-color: #1ed760;
+}
+
+.loginBox{
+  padding:20px;
+  margin: auto;
+  width: 200px;
+  height: 250px;
+  background-color:#242424;
+  box-shadow: 5px 10px 20px;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  background-position: center;
+}
+
+#login-form{
+  align-items: center;
+  margin-top: 20px;
+  padding:0;
+  border-radius: 4px;  
 }
 #login-form label{
+  margin-right: 140px;
   color: white;
+  text-align: left;
+  font-size: 14px;
 }
+#login-form input{
+  width: 200px;
+  height: 30px;
+  background: rgb(103, 102, 102);
+  appearance: none;
+  border: none;
+  color: white;
+  box-sizing:content-box;
+  -webkit-transition: 0.2s;
+  transition: 0.2s;
+  outline: none;
+}
+#login-form input:focus{
+  border: 1px solid #555;
+}
+
+#login-form input::placeholder{
+  color: rgb(157, 157, 157);
+}
+#login-form button{
+  align-items: center;
+  text-align: center;
+  background-color: #1ed760;
+  border-radius: 30px;
+  font-weight: bold;
+  padding: 8px 32px;
+  height: 48px;
+  width: 100px;
+  cursor: pointer;
+}
+.regCont{
+  color: white;
+  text-align: center;
+}
+#login-form p{
+  font-size: 10px;
+}
+
 /* make each playlist post on socialFeed "clickable" (click on the div to view the playlist) */
 div.playlist {
   background-color: #f00;
@@ -38,15 +100,19 @@ label{
 .navigation-bar {
   display: flex;
   flex-direction: column;
+  justify-content: space-around;
   align-items: center;
   background-color:rgb(5, 5, 5);
   color: white;
   padding: 10px;
+  max-height: 200px;
+  margin-bottom: 20px;
 }
 
 .logo {
-  width: 150px; 
+  width: 100px; 
   height: auto;
+  max-height: 100px;
   margin-bottom: 20px;
 }
 
