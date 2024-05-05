@@ -60,10 +60,8 @@ export const remFromLiked = async (playlistID) => {
   const playlistCollection = await c.playlists();
   const usersCollection = await c.users();
   
-  console.log('here');
   const playlist = await playlistCollection.findOne({_id: new ObjectId(playlistID)});
   let likers = playlist.likes;
-  console.log('here');
   for(const userID of likers){
     const user = await usersCollection.findOneAndUpdate(
       { _id: new ObjectId(userID) },
