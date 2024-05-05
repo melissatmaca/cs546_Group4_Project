@@ -318,6 +318,7 @@ try{
         return res.status(400).json({error: e});
       }
     }
+    //console.log(likeResult);
     res.json({ likes: likeResult });
   })
 
@@ -356,6 +357,7 @@ try{
     } catch(e) {
       return res.status(400).json({error: e});
     }
+    //console.log(commentAdded);
     res.json({comments:commentAdded});
   })
 

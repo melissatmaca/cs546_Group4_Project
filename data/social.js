@@ -90,7 +90,7 @@ export const addLike = async (userId, playlistId) => {
     { returnDocument: "after" }
   );
   if (!playlistAdded) throw `Failed to add the like to the user!`;
-  return playlistAdded.likes; // NOTE: if this passes, pass the new "likes"
+  return likeAdded.likes; // NOTE: if this passes, pass the new "likes"
 };
 
 export const removeLike = async (userId, playlistId) => {
@@ -127,5 +127,5 @@ export const removeLike = async (userId, playlistId) => {
     { returnDocument: "after" }
   );
   if (!playlistRemoved) throw `Failed to remove the like from the user!`;
-  return playlistRemoved.likes; // NOTE: if this passes, pass the new "likes"
+  return likeRemoved.likes; // NOTE: if this passes, pass the new "likes"
 };
