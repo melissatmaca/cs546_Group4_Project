@@ -483,4 +483,8 @@ router.route('/accessToken').get( async (req, res) => {
 
   });
 
+  router.route('/logout').get(async (req, res) => {
+    req.session.destroy();
+  });
+
   export default router;

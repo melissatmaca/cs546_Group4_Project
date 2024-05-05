@@ -41,6 +41,14 @@ app.use('/', (req, res, next) =>{
   }
 });
 
+app.get('/logout', (req, res, next) => {
+    if(!req.session.user){
+        return res.redirect('/login')
+    } else {
+        next();
+    }
+});
+
 configRoutes(app);
 
 app.listen(3000, () =>{
