@@ -280,6 +280,7 @@ label{
 }
 
 .playlist-page {
+  padding: 20px;
   background-color: rgb(25, 25, 25);
   color: white;
 }
@@ -294,6 +295,10 @@ label{
 .playlist-page .buttons{
   display: flex;
   justify-content:space-around;
+}
+.buttons{
+  align-items: baseline;
+  padding-bottom: 20px ;
 }
 
 .playlist-page .buttons button {
@@ -530,12 +535,12 @@ body.del-page {
   font-size: 15px;
   text-align: center;
 }
-#createdPlaylists a{
+#createdPlaylists a, #likedPlaylists a{
   color: black;
 }
 
 .added-page h1{
-  color:rgb(0, 167, 75);
+  color:rgb(25, 25, 25);
   margin-left: 20px;
 }
 

@@ -164,6 +164,7 @@ try{
     try{
       playlistData = await getPlaylistJSON(playlist.tracks, req.session.user.accessToken);
       playlistTitle = playlist.title;
+      likeCount = playlist.likes.length;
       ownerName = playlist.userName;
       caption = playlist.caption;
       isOwner = (req.session.user.id == playlist.userID);
@@ -392,7 +393,6 @@ router.route('/register')
       try{
         const newUser = await createUser(userData.firstName, userData.lastName, userData.email, userData.username, userData.password);
         res.redirect('/login');
-        req.session.user = newUser;
       } catch (e){
         return res.status(400).render('register', {error: e});
       }
@@ -543,6 +543,9 @@ router.route('/accessToken').get( async (req, res) => {
     };
     let genrePieChart = await chartNode.renderToBuffer(chartData);
     genrePieChart = `data:image/png;base64,${genrePieChart.toString('base64')}`;
+    
+    likedPlaylists = likedPlaylists.filter(function(playlist){return playlist.posted});
+
     return res.render('./profile', {title: "Profile", loggedIn: true, spotifyUsername: spotifyUsername, username: req.session.user.username, numFollowers: numFollowers, topTracks: topTracks, 
                       topArtists: topArtists, genres: genrePieChart, likedPlaylists: likedPlaylists, createdPlaylists: createdPlaylists});
 
@@ -550,7 +553,7 @@ router.route('/accessToken').get( async (req, res) => {
 
   router.route('/logout').get(async (req, res) => {
     req.session.destroy();
-    res.render('login');
+    res.redirect('/login');
   });
 
   export default router;
