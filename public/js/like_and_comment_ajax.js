@@ -32,31 +32,42 @@
       const commentText = $(this).find("textarea").val();
 
       // Check if the comment is not just the placeholder or empty
-      if (commentText && commentText !== "Write a comment...") {
+      if (commentText.trim()) {
         // AJAX POST request to handle comment submission
         $.ajax({
           url: `/api/playlist/${playlistId}/comment`,
           method: "POST",
           data: { comment: commentText },
           success: function (response) {
-            //console.log(response)
-            const commentsContainer = $(
-              `[data-comment-id="${playlistId}-comments"]`
-            );
-            const newComment = response.comments; 
-            const commentHtml = `<div class="comment" id="${newComment._id}">
-                        <p>${newComment.author}: ${newComment.comment}</p>
-                        <p>${newComment.postDate}</p>
-                    </div>`;
-            commentsContainer.append(commentHtml); // Append the new comment to the comments container
+            const commentsContainer = $(`[data-comment-id="${playlistId}-comments"]`);
+            const commentForm = commentsContainer.find('form');
+            const newComment = response.comments;
+          
+            // const commentHtml = `<div class="comment" id="${newComment._id}">
+            //                 <p>${encodeHtml(newComment.author)}: ${encodeHtml(newComment.comment)}</p>
+            //                 <p>${newComment.postDate}</p>
+            //             </div>`;
+
+            // comment elements to look like the above html
+            const commentDiv = $('<div class="comment">').attr('id', newComment._id);
+            const authorText = $('<p>').text(newComment.author + ": " + newComment.comment); // prevent HTML from rendering with .text()
+            const postDateText = $('<p>').text(newComment.postDate);
+            commentDiv.append(authorText).append(postDateText);
+
+            // Insert the new comment directly before the form
+            commentForm.before(commentDiv); // Insert the new comment directly before the form
             $(".comment-form textarea").val(""); // Clear the textarea after submitting
+            // if this is the first ever comment, remove _id-no-comment p-tag
+            if ($(`#${playlistId}-no-comment`).length) {
+              $(`#${playlistId}-no-comment`).remove();
+            }
           },
           error: function () {
-            alert("Error submitting comment.");
+            alert("Error submitting comment");
           },
         });
       } else {
-        alert("Please write a comment.");
+        alert("Please write a non-empty comment");
       }
     });
 
