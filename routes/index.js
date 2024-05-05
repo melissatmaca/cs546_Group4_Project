@@ -5,7 +5,7 @@ const constructorMethod = (app) => {
   app.use('/', Routes);
 
   app.use('*', (req, res) => {
-    res.render("./login", ({title: "login"}));
+    res.redirect('/login');
   });
 };
 
