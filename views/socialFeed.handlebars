@@ -1,16 +1,16 @@
-<h1>Shared Playlists</h1>
+<h1 id="social-media-title">Shared Playlists</h1>
     <div id="playlists">
         {{#each playlists}}
         <div class="playlist" id="{{this._id}}">
-            <a href="/playlist/{{this._id}}" class="fill-div"></a>
-            <h2>{{this.title}}</h2>
+            <a href="/playlist/{{this._id}}" class="fill-div">
+            <h2>{{this.title}}</h2> </a>
             <p>{{this.caption}}</p>
             <ol>
                 {{#each this.trackData}}
-                    <li class="track-list">
-                        <img src="{{album.images.[0].url}}" alt="{{album.name}} Cover" width="200">
+                    <li>
+                        <img src="{{album.images.[0].url}}" alt="{{album.name}} Cover" >
                         <h2>{{name}}</h2>
-                        <p>Artist: {{artists.[0].name}}</p>
+                        <p>Artist: {{artists.[0].name}}</p> 
                         <p>Album: {{album.name}}</p>
                     </li>
                 {{/each}}
@@ -43,4 +43,4 @@
     </div>
 <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" 
 crossorigin="anonymous"></script>
-{{> (lookup . 'script_partial') }}
+<script src="/public/js/like_and_comment_ajax.js"></script>
