@@ -10,6 +10,7 @@
         url: `/api/playlist/${playlistId}/like`,
         method: "POST",
         success: function (response) {
+          //console.log(response)
           // Response should contrain the updated likes count
           $(`[data-count-id="${playlistId}-count"]`).text(
             response.likes.length
@@ -38,11 +39,11 @@
           method: "POST",
           data: { comment: commentText },
           success: function (response) {
-            // Assuming response returns the newly added comment details
+            //console.log(response)
             const commentsContainer = $(
               `[data-comment-id="${playlistId}-comments"]`
             );
-            const newComment = response.comment; // assuming the server responds with the new comment data
+            const newComment = response.comments; 
             const commentHtml = `<div class="comment" id="${newComment._id}">
                         <p>${newComment.author}: ${newComment.comment}</p>
                         <p>${newComment.postDate}</p>

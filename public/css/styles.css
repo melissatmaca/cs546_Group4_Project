@@ -236,8 +236,6 @@ label{
   color: white;
   padding: 10px;
   max-height: 200px;
-  margin-bottom: 20px;
-  
 }
 
 .logo {
@@ -427,10 +425,11 @@ body.del-page {
 
 /* Profile CSS */
 #profileMainContainer{
+  background-color: rgb(25, 25, 25);
   display: flex;
   align-items: center;
   flex-direction: column;
-  margin-bottom: 30px;
+  height: 100%;
 }
 #usernameHeader{
   color: white;
@@ -582,8 +581,13 @@ body.del-page {
 }
 
 .playlist a {
-  color: #1DB954; /* Spotify green for links */
+  color: #ffffff;
   text-decoration: none;
+}
+
+.playlist a:hover {
+  color: #1DB954; 
+  text-shadow: 2px 2px 4px #000000;
 }
 
 /* Responsive image settings */
