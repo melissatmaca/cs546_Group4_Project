@@ -3,7 +3,7 @@ import * as helper from "../helpers.js";
 import { ObjectId } from "mongodb";
 
 // getting the data for how the posts are viewed (social feed)
-export const getFeed = async () => {
+export const getFeed = async (userID) => {
   // get the playlists that are posted
   const playlistsCollection = await c.playlists();
   if (!playlistsCollection) throw `Database not found`;
@@ -12,7 +12,13 @@ export const getFeed = async () => {
     .toArray();
   if (!sharedPlaylists) throw `Could not retrieve playlists`;
   // I'll get the first 5 tracks in each playlist later, probably in the routes before rendering a handlebar
-  return sharedPlaylists;
+  let ret = [];
+  for(const playlist of sharedPlaylists){
+    if(playlist.userID != userID){
+      ret.push(playlist);
+    }
+  }
+  return ret;
 };
 
 // adding one comment (str: comment, str: playlistId)

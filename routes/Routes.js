@@ -259,8 +259,8 @@ try{
   .get(async (req, res) => {
     let feed = undefined;
     try {
-      feed = await socialData.getFeed();
-      feed = feed.reverse(); // reverse the page to get by most recently created
+      feed = await socialData.getFeed(req.session.user.id);
+      feed = feed.reverse(); // reverse the page to get by most recently created 
     } catch(e) {
       console.log(e);
       return res.status(400).render('error', {error: e, title: 'Error', loggedIn: true});
