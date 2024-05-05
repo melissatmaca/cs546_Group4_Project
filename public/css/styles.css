@@ -382,8 +382,13 @@ body.del-page {
 }
 
 .playlist a {
-  color: #1DB954; /* Spotify green for links */
+  color: #ffffff;
   text-decoration: none;
+}
+
+.playlist a:hover {
+  color: #1DB954; 
+  text-shadow: 2px 2px 4px #000000;
 }
 
 /* Responsive image settings */
