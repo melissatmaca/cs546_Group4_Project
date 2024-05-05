@@ -4,36 +4,14 @@ import session from 'express-session';
 import dotenv from 'dotenv';
 import configRoutes from './routes/index.js';
 
-import {fileURLToPath} from 'url';
-import {dirname} from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const staticDir = express.static(__dirname + '/public');
-
 dotenv.config();
 let app = express();
 
-app.use('/public', staticDir);
+app.use('/public', express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
-const handlebarsInstance = exphbs.create({
-    defaultLayout: 'main',
-    // Specify helpers which are only registered on this instance.
-    helpers: {
-      asJSON: (obj, spacing) => {
-        if (typeof spacing === 'number')
-          return new Handlebars.SafeString(JSON.stringify(obj, null, spacing));
-  
-        return new Handlebars.SafeString(JSON.stringify(obj));
-      }
-    },
-    partialsDir: ['views/partials/']
-  });
-
-app.engine('handlebars', handlebarsInstance.engine);
+app.engine('handlebars', exphbs.engine({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
 
