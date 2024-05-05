@@ -1,24 +1,33 @@
-
 <section class="playlist-page">
-<h1>{{playlistTitle}}</h1>
-<p>Owner: {{ownerName}}</p>
-<p>{{caption}}</p>
-{{#if isOwner}}
-    <form id="deleteForm" action="/playlist/{{playlistID}}" method="POST">
-        <button type="submit">Delete Playlist</button>
-    </form>
-{{/if}}
-<ol>
-    {{#each playlistData}}
+    <h1>{{playlistTitle}}</h1>
+    <p>Owner: {{ownerName}}, Likes: {{likeCount}}</p>
+    <p>{{caption}}</p>
+    <div class="buttons">
+        <form id="saveToSpotifyForm" action="/spotify/{{playlistID}}" method="POST">
+            <button type="submit">Save To Spotify</button>
+        </form>
+        {{#if isOwner}}
+        <form id="postForm" action="/playlist/post/{{playlistID}}" method="POST">
+            <button type="submit">{{posted}}</button>
+        </form>
+        <form id="deleteForm" action="/playlist/{{playlistID}}" method="POST">
+            <button type="submit">Delete Playlist</button>
+        </form>
+        {{else}}
+        <form id="likeForm" action="/playlist/like/{{playlistID}}" method="POST">
+            <button type="submit">{{liked}}</button>
+        </form>
+        {{/if}}
+    </div>
+
+    <ol>
+        {{#each playlistData}}
         <li class="track-list">
             <img src="{{album.images.[0].url}}" alt="{{album.name}} Cover" width="200">
             <h2>{{name}}</h2>
             <p>Artist: {{artists.[0].name}}</p>
             <p>Album: {{album.name}}</p>
         </li>
-    {{/each}}
-</ol>
-<form id="saveToSpotifyForm" action="/spotify/{{playlistID}}" method="POST">
-        <button type="submit">Save to Spotify</button>
-</form>
+        {{/each}}
+    </ol>
 </section>
