@@ -523,9 +523,9 @@ router.route('/accessToken').get( async (req, res) => {
     const chartData = {
       type: 'pie',
             data: {
-                labels: labels,
+                labels: labels.slice(0, 15),
                 datasets: [{
-                    data: data,
+                    data: data.slice(0, 15),
                     backgroundColor: helper.getRandomColors(labels.length),
                     borderColor: 'black',
                 }]
