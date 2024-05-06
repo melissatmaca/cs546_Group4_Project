@@ -78,7 +78,7 @@ try{
     if(caption.length >255){throw 'Caption must be maximum 255 characters'}
 }catch(Error){
     console.log(Error);
-    res.status(400).render("generator", ({title: "generator", Error: Error}))
+    res.status(400).render("generator", ({title: "generator", Error: Error, loggedIn: true}))
 }
 
     try{
@@ -195,7 +195,8 @@ try{
       title: playlistTitle,
       posted,
       liked,
-      likeCount
+      likeCount,
+      comments: playlist.comments
   });
   })
   .post(async (req, res) => {
@@ -497,13 +498,16 @@ router.route('/accessToken').get( async (req, res) => {
     let genreBreakdown = undefined;
     let spotifyUsername = undefined;
     let userInfo = undefined;
+    let premium = undefined;
 
     try{
       topArtists = await analytics.getTopArtists(req.session.user.accessToken, 10);
       topTracks = await analytics.getTopTracks(req.session.user.accessToken, 10);
       userInfo = await analytics.getSpotifyUserInfo(req.session.user.accessToken);
+      premium = (userInfo.product === 'free') ? false : true;
       numFollowers = userInfo.followers.total;
       spotifyUsername = userInfo.display_name;
+
       likedPlaylists = await analytics.getLikedPlaylists(req.session.user.username);
       createdPlaylists = await analytics.getCreatedPlaylists(req.session.user.username);
       genreBreakdown = await analytics.getGenreBreakdown(req.session.user.accessToken);
@@ -547,8 +551,8 @@ router.route('/accessToken').get( async (req, res) => {
     likedPlaylists = likedPlaylists.filter(function(playlist){return playlist.posted});
 
     return res.render('./profile', {title: "Profile", loggedIn: true, spotifyUsername: spotifyUsername, username: req.session.user.username, numFollowers: numFollowers, topTracks: topTracks, 
-                      topArtists: topArtists, genres: genrePieChart, likedPlaylists: likedPlaylists, createdPlaylists: createdPlaylists});
-
+                      topArtists: topArtists, genres: genrePieChart, likedPlaylists: likedPlaylists, createdPlaylists: createdPlaylists, 
+                      isPremium: premium});
   });
 
   router.route('/logout').get(async (req, res) => {

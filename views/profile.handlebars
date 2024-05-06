@@ -23,27 +23,45 @@
                         <div id="topItemsContainer">
                             <div id="topTracksCard" class="analyticsCard">
                                 <h2 class="analyticsCardTitle">Top Tracks:</h2>
-                                <ol class="topList">
-                                {{#each topTracks}}
-                                    <li class="topItems">{{this}}</li>
-                                {{/each}}
-                                </ol>
+                                {{#if isPremium}}
+                                    <ol class="topList">
+                                        {{#each topTracks}}
+                                            <li class="topItems">{{this}}</li>
+                                        {{/each}}
+                                    </ol>
+                                {{else}}
+                                    <ul class="topList">
+                                        <li>This data is only available to Spotify Users with a Premium Account.</li>
+                                    </ul>
+                                {{/if}}
                             </div>
 
                             <div id="topArtistsCard" class="analyticsCard">
                                 <h2 class="analyticsCardTitle">Top Artists:</h2>
-                                <ol class="topList">
-                                {{#each topArtists}}
-                                    <li class="topItems">{{this}}</li>
-                                {{/each}}
-                                </ol>
+                                {{#if isPremium}}
+                                    <ol class="topList">
+                                        {{#each topArtists}}
+                                            <li class="topItems">{{this}}</li>
+                                        {{/each}}
+                                    </ol>
+                                {{else}}
+                                    <ul class="topList">
+                                        <li>This data is only available to Spotify Users with a Premium Account.</li>
+                                    </ul>
+                                {{/if}}
                             </div>
                         </div>
                 </div>
                 
                 <div id="genreCard" class="analyticsCard">
                     <h2 class="analyticsCardTitle">Genre Breakdown:</h2>
-                    <img src="{{genres}}" alt="Genre Breakdown Pie Chart">
+                    {{#if isPremium}}
+                        <img src="{{genres}}" alt="Genre Breakdown Pie Chart">
+                    {{else}}
+                        <ul class="topList">
+                            <li>This data is only available to Spotify Users with a Premium Account.</li>
+                        </ul>
+                    {{/if}}
                 </div>
             </div>
             

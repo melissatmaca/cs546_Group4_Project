@@ -104,10 +104,10 @@ export const changePost = async (playlistID) => {
     if (!ObjectId.isValid(playlistID)) throw 'invalid object ID';
     const playlistCollection = await c.playlists();
     const usersCollection = await c.users();
-
     
     const playlist = await playlistCollection.findOne({_id: new ObjectId(playlistID)});
     if (!playlist) throw 'No playlist with that id';
+    if(playlist.userID === userID) throw `You cannot like your own playlist!`;
     if(playlist.likes.includes(userID)){
       const updateResult = await playlistCollection.updateOne(
         { _id: new ObjectId(playlistID) },

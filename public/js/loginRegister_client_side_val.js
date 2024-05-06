@@ -1,5 +1,5 @@
 function checkString(str, strName){
-    if(!str || typeof str !== 'string'|| str.trim().length === 0) throw `${strName} must be non-empty string.`;
+    if(!str || typeof str !== 'string'|| str.trim().length === 0) throw `${strName} must be a non-empty string.`;
     return str.trim();
 };
   
@@ -24,8 +24,7 @@ function checkUsername(username){
     return username.trim();
 };
 function checkPassword(password){
-    if(typeof password !== 'string') throw 'Password must be a string.';
-    if(password.trim().length === 0) throw  `Password cannot be empty spaces`;
+    if(!checkString(password, "Password"));
     
     let space = /\s/;
     let atLeastOneNum = /[0-9]/; // at least one number
@@ -129,7 +128,6 @@ if(regForm) {
         }
 
         if(confirmAge.checked){
-            submitAllowed = true
             confirmAgeError.hidden = true;
         } else {
             confirmAgeError.innerHTML = 'You must confirm your age!';
@@ -159,7 +157,7 @@ if(loginForm){
             usernameErr.hidden = true;
         } catch(e){
             username.value = "";
-            usernameErr.innerHTML = e;
+            usernameErr.innerHTML = "Please enter a valid username.";
             usernameErr.hidden = false;
             submitAllowed = false;
         }
@@ -169,7 +167,7 @@ if(loginForm){
             passwordErr.hidden = true;
         } catch(e){
             password.value = "";
-            passwordErr.innerHTML = e;
+            passwordErr.innerHTML = "Please enter a valid password";
             passwordErr.hidden = false;
             submitAllowed = false;
         }
