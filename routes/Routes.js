@@ -522,7 +522,7 @@ router.route('/accessToken').get( async (req, res) => {
       labels.push(item[0]);
       data.push(item[1]);
     });
-    const chartNode = new ChartJSNodeCanvas({ width: 400, height: 400 });
+    const chartNode = new ChartJSNodeCanvas({ width: 500, height: 500 });
 
     const chartData = {
       type: 'pie',
@@ -538,7 +538,7 @@ router.route('/accessToken').get( async (req, res) => {
             plugins: {
               legend: {
                   display: true,
-                  position: 'bottom', 
+                  position: 'right', 
                   labels: {
                       font: {
                           size: 16
