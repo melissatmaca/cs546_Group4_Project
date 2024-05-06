@@ -4,6 +4,7 @@
         <div class="playlist" id="{{this._id}}">
             <a href="/playlist/{{this._id}}" class="fill-div">
             <h2>{{this.title}}</h2> </a>
+            <p>Posted By: {{this.userName}}</p>
             <p>{{this.caption}}</p>
             <ol>
                 {{#each this.trackData}}
