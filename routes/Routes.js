@@ -195,7 +195,8 @@ try{
       title: playlistTitle,
       posted,
       liked,
-      likeCount
+      likeCount,
+      comments: playlist.comments
   });
   })
   .post(async (req, res) => {

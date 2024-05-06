@@ -335,6 +335,10 @@ label{
   margin-bottom: 20px;
   margin-left: 20px;
 }
+.track-list li{
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
 
 .track-list img {
   width: 100px;
@@ -726,3 +730,51 @@ body.del-page {
 .comment-button button:hover {
   background-color: #1ed760;
 }
+
+.comment-list {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  margin-left: 20px;
+}
+
+.comment-list h2,
+.comment-list h1,
+.comment-list p {
+  margin: 0;
+}
+
+.comment-list h2 {
+  font-size: 16px;
+  font-weight: bold;
+  margin-right: 10px;
+  color: rgb(28, 185, 84);
+}
+.comment-list h1 {
+  font-size: 16px;
+  font-weight: bold;
+  margin-right: 10px;
+  color: white;
+}
+
+.comment-list p {
+  margin-right: 10px;
+  font-size: 10px;
+}
+
+.playlist-page ul {
+  counter-reset: item;
+  padding-left: 0;
+}
+
+.playlist-page .general,
+.playlist-page .tracks{
+  background-color: #282828;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.playlist-page .tracks{
+  margin-bottom: 20px;
+}
+
