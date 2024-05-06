@@ -105,13 +105,13 @@ try{
       if (playlistID.length === 0) throw 'id cannot be an empty string or just spaces';
       if (!ObjectId.isValid(playlistID)) throw "Not Valid ID";
     } catch (e) {
-      return res.status(400).json({error: e});
+      return res.status(400).render('error', {error: e, title: 'Error', loggedIn: true});
     }
 
     try {
       await changePost(playlistID);
-    } catch (error) {
-      return res.status(400).json({error: error});
+    } catch (e) {
+      return res.status(400).render('error', {error: e, title: 'Error', loggedIn: true});
     }
     res.redirect(`/playlist/${playlistID}`);
   })
@@ -128,12 +128,12 @@ try{
       if (playlistID.length === 0) throw 'id cannot be an empty string or just spaces';
       if (!ObjectId.isValid(playlistID)) throw "Not Valid ID";
     } catch (e) {
-      return res.status(400).json({error: e});
+      return res.status(400).render('error', {error: e, title: 'Error', loggedIn: true});
     }
     try {
       await changeLike(playlistID, req.session.user.id);
-    } catch (error) {
-      return res.status(400).json({err: error});
+    } catch (e) {
+      return res.status(400).render('error', {error: e, title: 'Error', loggedIn: true});
     }
     res.redirect(`/playlist/${playlistID}`);
   })
@@ -151,7 +151,7 @@ try{
       if (!ObjectId.isValid(playlistID)) throw "Not Valid ID";
     } catch (e) {
       // console.log(e);
-      return res.status(400).json({error: e});
+      return res.status(400).render('error', {error: e, title: 'Error', loggedIn: true});
     }
     
     //try getting the post by ID
@@ -159,7 +159,7 @@ try{
     try {
       playlist = await get(req.params.id.trim());
     } catch (e) {
-      return res.status(404).json({error: e});
+      return res.status(404).render('error', {error: e, title: 'Error', loggedIn: true});
     }
     try{
       playlistData = await getPlaylistJSON(playlist.tracks, req.session.user.accessToken);
@@ -182,7 +182,7 @@ try{
       }
     } catch(e){
       //console.log(e);
-      return res.status(404).json({error: e});
+      return res.status(404).render('error', {error: e, title: 'Error', loggedIn: true});
     }
     res.render('playlist', { 
       playlistData,
@@ -207,8 +207,8 @@ try{
       if (playlistID.length === 0) throw 'id cannot be an empty string or just spaces';
       if (!ObjectId.isValid(playlistID)) throw "Not Valid ID";
     } catch (e) {
-      console.log(e);
-      return res.status(400).json({error: e});
+      // console.log(e);
+      return res.status(400).render('error', {error: e, title: 'Error', loggedIn: true});
     }
     //try to delete post
     try {
@@ -217,7 +217,7 @@ try{
       res.render('delete', {title: 'Deleted Playlist', loggedIn: true, playlist: deletedPlaylist});
     } catch (e) {
 
-      return res.status(404).json({error: e});
+      return res.status(404).render('error', {error: e, title: 'Error', loggedIn: true});
     }
   })
   router
@@ -230,7 +230,7 @@ try{
       userSpotifyID = userInfo;
     }catch(e){
       console.log(e)
-      return res.status(400).json({error: e});
+      return res.status(400).render('error', {error: e, title: 'Error', loggedIn: true});
     }
 
     let SpotifyPlaylistID=null;
@@ -240,15 +240,15 @@ try{
       SpotifyPlaylistID = savedPlaylist;
 
     }catch(e){
-      return res.status(500).json({error: e});
+      return res.status(500).render('error', {error: e, title: 'Error', loggedIn: true});
     }
 
 
     try {
       let playlistInfo = await get(req.params.id);
       let filledPlaylist = await populatePlaylist(req.session.user.accessToken,playlistInfo.tracks, SpotifyPlaylistID);
-    } catch (error) {
-      return res.status(500).json({error: error});
+    } catch (e) {
+      return res.status(500).render('error', {error: e, title: 'Error', loggedIn: true});
     }
     res.render('./playlistadded', {loggedIn: true})
   })
@@ -259,11 +259,11 @@ try{
   .get(async (req, res) => {
     let feed = undefined;
     try {
-      feed = await socialData.getFeed();
-      feed = feed.reverse(); // reverse the page to get by most recently created
+      feed = await socialData.getFeed(req.session.user.id);
+      feed = feed.reverse(); // reverse the page to get by most recently created 
     } catch(e) {
       console.log(e);
-      return res.status(400).json({error: e});
+      return res.status(400).render('error', {error: e, title: 'Error', loggedIn: true});
     }
     // get the tracks with these IDs, limited up to 5 (to not "clog" the feed)
     let fullFeed = [];
@@ -276,7 +276,7 @@ try{
       }
       //fullFeed = feed.map(playlist => ({...playlist, trackData: await getPlaylistJSON(playlist.tracks.slice(0,5), req.session.user.accessToken)}))
     } catch(e) {
-      return res.status(400).json({error: e});
+      return res.status(400).render('error', {error: e, title: 'Error', loggedIn: true});
     }
     res.render('socialFeed', {playlists: fullFeed, loggedIn:true, title:"Social Feed"});
   })
@@ -299,7 +299,7 @@ try{
       });
       if (!playlist) throw `Could not find playlist with the id: ${playlistId}`;
     } catch(e) {
-      return res.status(400).json({error: e});
+      return res.status(400).render('error', {error: e, title: 'Error', loggedIn: true});
     }
 
     // check whether to add or remove like
@@ -309,14 +309,14 @@ try{
       try {
         likeResult = await socialData.removeLike(req.session.user._id, playlistId);
       } catch(e) {
-        return res.status(400).json({error: e});
+        return res.status(400).render('error', {error: e, title: 'Error', loggedIn: true});
       }
     } else {
       // add like
       try { 
         likeResult = await socialData.addLike(req.session.user._id, playlistId);
       } catch(e) {
-        return res.status(400).json({error: e});
+        return res.status(400).render('error', {error: e, title: 'Error', loggedIn: true});
       }
     }
     //console.log(likeResult);
@@ -340,7 +340,7 @@ try{
       });
       if (!playlist) throw `Could not find playlist with the id: ${playlistId}`;
     } catch(e) {
-      return res.status(400).json({error: e});
+      return res.status(400).render('error', {error: e, title: 'Error', loggedIn: true});
     }
     // fetch the comment
     let comment = undefined;
@@ -349,14 +349,14 @@ try{
       comment = helper.checkComment(comment, "Comment");
       comment = xss(comment); // "clean" the textarea input
     } catch(e) {
-      return res.status(400).json({error: e});
+      return res.status(400).render('error', {error: e, title: 'Error', loggedIn: true});
     }
     // add the comment
     let commentAdded = undefined;
     try {
       commentAdded = await socialData.addComment(comment, req.session.user._id, playlistId);
     } catch(e) {
-      return res.status(400).json({error: e});
+      return res.status(400).render('error', {error: e, title: 'Error', loggedIn: true});
     }
     //console.log(commentAdded);
     res.json({comments:commentAdded});

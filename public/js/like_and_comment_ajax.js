@@ -73,14 +73,14 @@
 
     // Handling textarea for removing default text on focus, and adding it when not focused
     $(".playlist").on("focus", "textarea", function () {
-      if (this.value === "Write a comment...") {
-        this.value = "";
+      if (this.placeholder === "Write a comment...") {
+        this.placeholder = "";
       }
     });
 
     $(".playlist").on("blur", "textarea", function () {
       if (this.value === "") {
-        this.value = "Write a comment...";
+        this.placeholder = "Write a comment...";
       }
     });
   });
