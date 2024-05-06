@@ -4,6 +4,8 @@ import { ObjectId } from "mongodb";
 
 // getting the data for how the posts are viewed (social feed)
 export const getFeed = async (userID) => {
+  // id validation
+  userID = helper.checkID(userID, "UserID");
   // get the playlists that are posted
   const playlistsCollection = await c.playlists();
   if (!playlistsCollection) throw `Database not found`;

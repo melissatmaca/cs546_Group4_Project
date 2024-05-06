@@ -269,7 +269,7 @@ try{
       feed = await socialData.getFeed(req.session.user.id);
       feed = feed.reverse(); // reverse the page to get by most recently created 
     } catch(e) {
-      console.log(e);
+      //console.log(e);
       return res.status(400).render('error', {error: e, title: 'Error', loggedIn: true});
     }
     // get the tracks with these IDs, limited up to 5 (to not "clog" the feed)
