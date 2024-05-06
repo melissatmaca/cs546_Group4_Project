@@ -49,7 +49,7 @@
             //             </div>`;
 
             // comment elements to look like the above html
-            const commentDiv = $('<div class="comment">').attr('id', newComment._id);
+            const commentDiv = $('<div class="comment">') // .attr('id', newComment._id);
             const authorText = $('<p>').text(newComment.author + ": " + newComment.comment); // prevent HTML from rendering with .text()
             const postDateText = $('<p>').text(newComment.postDate);
             commentDiv.append(authorText).append(postDateText);
