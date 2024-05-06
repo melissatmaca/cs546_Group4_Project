@@ -1,1 +1,8 @@
-<p>{{error}}</p>
+<div id="errorPageContainer">
+    <p>{{error}}</p>
+    {{#if noSpotify}}
+    <a href="/authorize">Sign into your Spotify Account</a>
+    <p>or</p>
+    <a href="/logout">Logout</a>
+    {{/if}}
+</div>
