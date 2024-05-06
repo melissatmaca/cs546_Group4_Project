@@ -781,3 +781,18 @@ body.del-page {
   margin-bottom: 20px;
 }
 
+#errorPageContainer{
+  display: flex;
+  flex-direction: column;
+  background-color: black;
+  border-radius: 20px;
+  padding: 20px;
+  justify-content: center;
+  align-items: center;
+  margin: 50px;
+  color: white;
+}
+
+#errorPageContainer a{
+  color: white;
+}

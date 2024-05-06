@@ -258,6 +258,7 @@ try{
   router
   .route('/feed')
   .get(async (req, res) => {
+    if(!req.session.user.accessToken) {return res.render('error', {title: 'Error', error: "Error: you must be signed into a Spotify Account.", noSpotify: true})}
     let feed = undefined;
     try {
       feed = await socialData.getFeed(req.session.user.id);
