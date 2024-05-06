@@ -77,7 +77,6 @@ try{
     if(caption.length < 1){throw 'Caption too short'}
     if(caption.length >255){throw 'Caption must be maximum 255 characters'}
 }catch(Error){
-    console.log(Error);
     res.status(400).render("generator", ({title: "generator", Error: Error, loggedIn: true}))
 }
 
@@ -89,7 +88,6 @@ try{
     }
   }catch(e){
     res.render('generator', {title:"generator", Error: e, loggedIn: true})
-    console.log(e);
   }
   });
 
@@ -251,7 +249,7 @@ try{
     } catch (e) {
       return res.status(500).render('error', {error: e, title: 'Error', loggedIn: true});
     }
-    res.render('./playlistadded', {loggedIn: true, title: "playlist-Added"})
+    res.render('./playlistadded', {loggedIn: true})
   })
 
   // social feed routes
@@ -543,7 +541,7 @@ router.route('/accessToken').get( async (req, res) => {
                   position: 'bottom', 
                   labels: {
                       font: {
-                          size: 16 
+                          size: 16
                       },
                       color: 'black',
                   }
