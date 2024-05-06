@@ -459,6 +459,7 @@ body.del-page {
   flex-direction: column;
   border-radius: 20px;
   padding: 20px;
+  margin: 30px;
 }
 
 #dashboardTitle h2{
