@@ -24,3 +24,10 @@ Profile: On the profile page, the user sees a breakdown of their spotify analyti
 
 Logout:
 The logout button simply logs the user out and returns them to the login screen where they can choose to login or register a new account.
+
+
+Testing:
+We have created a seed file to make testing easier. this can be run using "npm seed". This seed file adds 4 accounts and 
+
+Credits:
+Melissa Atmaca, Cade Cermak, Alvin Radoncic, Joseph Trobiano, Bernard Vitale

@@ -251,7 +251,7 @@ try{
     } catch (e) {
       return res.status(500).render('error', {error: e, title: 'Error', loggedIn: true});
     }
-    res.render('./playlistadded', {loggedIn: true})
+    res.render('./playlistadded', {loggedIn: true, title: "playlist-Added"})
   })
 
   // social feed routes
