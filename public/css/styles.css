@@ -700,7 +700,10 @@ body.del-page {
 .comment {
   padding: 5px;
   border-bottom: 1px solid #333; /* Subtle divider */
+  overflow-wrap: break-word; /* comment doesn't overflow page */
+
 }
+
 
 .comment:last-child {
   border-bottom: none;
