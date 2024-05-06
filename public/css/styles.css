@@ -1,6 +1,6 @@
 /* Make the background of each page have teh same background color */
 body{
-  background-color: #1DB954;
+  background-color: #146e34;
 }
 
 .loginBox{
@@ -79,10 +79,14 @@ body{
   font-size: 10px;
 }
 .regCont p{
-  color: white;
+  color: rgb(168, 168, 168);
   text-align: center;
 }
 
+
+.regCont a.registerRef:hover{
+  color: #42f07f;
+}
 .regCont a:visited{
   color: white;
 }
@@ -201,8 +205,11 @@ body{
 }
 
 .loginCont p{
-  color: white;
+  color: rgb(168, 168, 168);
   text-align: center;
+}
+.loginCont a.loginRef:hover{
+  color: #42f07f;
 }
 .loginCont a:visited{
   color: white;
