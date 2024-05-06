@@ -37,6 +37,8 @@ export const addComment = async (comment, userId, playlistId) => {
   let user = await usersCollection.findOne({
     _id: new ObjectId(userId),
   });
+
+  if(playlist.userID === userId) throw `You cannot comment on your own playlist!`;
   if (!user) throw `Could not find user with the id: ${userId}`;
   // push comment to the comment array (with the date)
   let date = new Date();
@@ -77,6 +79,7 @@ export const addLike = async (userId, playlistId) => {
   });
   if (!user) throw `Could not find user with the id: ${userId}`;
   // push userId to the playlists "likes" array parameter
+  if(playlist.userID === userId) throw `You cannot like your own playlist!`;
   let likeAdded = await playlistsCollection.findOneAndUpdate(
     { _id: new ObjectId(playlistId) },
     { $push: { likes: userId } },
@@ -113,6 +116,7 @@ export const removeLike = async (userId, playlistId) => {
     _id: new ObjectId(userId),
   });
   if (!user) throw `Could not find user with the id: ${userId}`;
+  if(playlist.userID === userId) throw `You cannot unlike your own playlist, how did you like it anyway?`;
   // pull userId from the playlists "likes" array parameter
   let likeRemoved = await playlistsCollection.findOneAndUpdate(
     { _id: new ObjectId(playlistId) },
