@@ -19,8 +19,12 @@ import {ChartJSNodeCanvas} from 'chartjs-node-canvas';
 import { userInfo } from 'os';
 
 router.route('/').get(async (req, res) => {
-  res.redirect('/login');
+  res.redirect('/home');
   return;
+});
+
+router.route('/home').get(async(req, res) => {
+  res.render('home', {title: "Home"});
 });
 
 router.route('/generator')
@@ -566,7 +570,7 @@ router.route('/accessToken').get( async (req, res) => {
 
   router.route('/logout').get(async (req, res) => {
     req.session.destroy();
-    res.redirect('login');
+    res.redirect('home');
   });
 
   export default router;

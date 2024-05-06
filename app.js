@@ -27,13 +27,13 @@ app.use(
 
 app.use('/', (req, res, next) =>{
   if(!req.session.user){
-      if (req.originalUrl === '/login' || req.originalUrl === '/register') {
+      if (req.originalUrl === '/home' || req.originalUrl === '/login' || req.originalUrl === '/register' ) {
           next(); 
       } else{
-          return res.redirect('/login'); 
+          return res.redirect('/home'); 
       }
   }else{
-      if (req.originalUrl === '/login' || req.originalUrl === '/register' || req.originalUrl === '/') {
+      if (req.originalUrl === '/home' || req.originalUrl === '/login' || req.originalUrl === '/register' || req.originalUrl === '/') {
             return res.redirect('/feed');
       }else{
           next();
@@ -43,7 +43,7 @@ app.use('/', (req, res, next) =>{
 
 app.get('/logout', (req, res, next) => {
     if(!req.session.user){
-        return res.redirect('/login')
+        return res.redirect('/home')
     } else {
         next();
     }
