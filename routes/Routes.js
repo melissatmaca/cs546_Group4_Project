@@ -25,6 +25,7 @@ router.route('/').get(async (req, res) => {
 
 router.route('/generator')
   .get(async (req, res) => {
+    if(!req.session.user.accessToken) {return res.render('error', {title: 'Error', error: "Error: you must be signed into a Spotify Account.", noSpotify: true})}
     res.render('generator', {title: "Generator", loggedIn: true});
   })
   .post(async (req, res) => {
@@ -491,6 +492,7 @@ router.route('/accessToken').get( async (req, res) => {
   });
 
   router.route('/profile').get(async (req, res) => {
+    if(!req.session.user.accessToken) {return res.render('error', {title: 'Error', error: "Error: you must be signed into a Spotify Account.", noSpotify: true})}
     let topTracks = undefined;
     let topArtists = undefined;
     let likedPlaylists = undefined;
