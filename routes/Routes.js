@@ -516,8 +516,14 @@ router.route('/accessToken').get( async (req, res) => {
       return res.status(500).render('./profile', {error: "Error: Unable to load profile, please refresh and try again.", loggedIn: true});
     }
 
-    const labels = Object.keys(genreBreakdown);
-    const data = Object.values(genreBreakdown);
+    genreBreakdown = Object.entries(genreBreakdown);
+    genreBreakdown.sort((p1, p2) => p2[1] - p1[1]);
+    const labels = [];
+    const data = [];
+    genreBreakdown.forEach(item => {
+      labels.push(item[0]);
+      data.push(item[1]);
+    });
     const chartNode = new ChartJSNodeCanvas({ width: 400, height: 400 });
 
     const chartData = {
@@ -534,7 +540,7 @@ router.route('/accessToken').get( async (req, res) => {
             plugins: {
               legend: {
                   display: true,
-                  position: 'left', 
+                  position: 'bottom', 
                   labels: {
                       font: {
                           size: 16 
