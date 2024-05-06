@@ -1,6 +1,3 @@
-Website to convert cURL for axios:
-    https://curlconverter.com/node-axios/
-
 AudioAve:
 This project acts as a companion app to Spotify and offers a variety of different features for the user. These include AI generated playlists, viewing personal statistics, saving playlists, and even a social media aspect, where users can choose to share playlists and view the playlists of others.
 
@@ -27,7 +24,10 @@ The logout button simply logs the user out and returns them to the login screen 
 
 
 Testing:
-We have created a seed file to make testing easier. this can be run using "npm seed". This seed file adds 4 accounts and 
+We have created a seed file to make testing easier. this can be run using "npm seed". This seed file adds 4 accounts and addssome playlist and like for each. The log in information for each of them can be found in the seed.js file.
+
+Because the spotify API requires that accounts be added to spotifys developer dashboard, we have provided an account both with and without spotify premium that have already been added to the dashboard (Please note that if a user is already logged into their spotify account on their browser, the login will attempt to use that account which is not added to the dashboard. Because of this, we recomend using a private browser and one of the accounts listed in the account.txt file).
+
 
 Credits:
 Melissa Atmaca, Cade Cermak, Alvin Radoncic, Joseph Trobiano, Bernard Vitale
