@@ -1,8 +1,10 @@
 <section class="playlist-page">
-    <h1>{{playlistTitle}}</h1>
-    <p>Owner: {{ownerName}}</p>
-    <p>Likes: {{likeCount}}</p>
-    <p>{{caption}}</p>
+    <div class="general">
+        <h1>{{playlistTitle}}</h1>
+        <p>Owner: {{ownerName}}</p>
+        <p>Likes: {{likeCount}}</p>
+        <p>{{caption}}</p>
+    </div>
     <div class="buttons">
         <form id="saveToSpotifyForm" action="/spotify/{{playlistID}}" method="POST">
             <button type="submit">Save To Spotify</button>
@@ -20,15 +22,28 @@
         </form>
         {{/if}}
     </div>
-
-    <ol>
-        {{#each playlistData}}
-        <li class="track-list">
-            <img src="{{album.images.[0].url}}" alt="{{album.name}} Cover" width="200">
-            <h2>{{name}}</h2>
-            <p>Artist: {{artists.[0].name}}</p>
-            <p>Album: {{album.name}}</p>
-        </li>
-        {{/each}}
-    </ol>
+    <div class="tracks">
+        <ol>
+            {{#each playlistData}}
+            <li class="track-list">
+                <img src="{{album.images.[0].url}}" alt="{{album.name}} Cover" width="200">
+                <h2>{{name}}</h2>
+                <p>Artist: {{artists.[0].name}}</p>
+                <p>Album: {{album.name}}</p>
+            </li>
+            {{/each}}
+        </ol>
+    </div>
+    <div class="comments">
+        <h3>Comments</h3>
+        <ul>
+            {{#each comments}}
+            <li class="comment-list">
+                <h2>{{author}}:</h2>
+                <h1> {{comment}}</h1>
+                <p>{{postDate}}</p>
+            </li>
+            {{/each}}
+        </ul>
+    </div>
 </section>
