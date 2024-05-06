@@ -77,7 +77,7 @@ try{
     if(caption.length < 1){throw 'Caption too short'}
     if(caption.length >255){throw 'Caption must be maximum 255 characters'}
 }catch(Error){
-    res.status(400).render("generator", ({title: "generator", Error: Error, loggedIn: true}))
+    return res.status(400).render("generator", ({title: "generator", Error: Error, loggedIn: true}))
 }
 
     try{
