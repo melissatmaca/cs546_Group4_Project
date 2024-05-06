@@ -106,6 +106,7 @@ body{
 }
 
 .PasswordReq {
+  margin-left: 20px;
   margin-top: 2px;
   font-size: 14px;
   width: 300px;
@@ -123,24 +124,21 @@ body{
 }
 
 #register-form label{
-  margin-right: 140px;
   color: white;
   text-align: left;
-  font-size: 14px;
+  font-size: 13px;
+  margin-left: 20px;
 }
 
 .ManualEntry {
   margin-top: 10px;
 }
 
-.ManualEntry label{
-  margin-top: 5px;
-  margin-bottom: 5px;
-}
 
 .ManualEntry input{
   margin-bottom: 5px;
   margin-top: 5px;
+  margin-left: 20px;
   width: 300px;
   height: 25px;
   background: rgb(103, 102, 102);

@@ -64,9 +64,8 @@ export function checkUsername(username){
 };
 
 export function checkPassword(password){
-  if(typeof password !== 'string') throw 'Password must be a string.';
-  if(password.trim().length === 0) throw  `Password cannot be empty spaces`;
-  
+  if(!checkString(password, "Password"));
+
   let space = /\s/;
   let atLeastOneNum = /[0-9]/; // at least one number
   let atLeastOneUpperCase = /[A-Z]/; // at least one uppercase character
