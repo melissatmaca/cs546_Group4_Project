@@ -25,7 +25,36 @@ cade = cade [0];
 melissa = melissa[0];
 alvin = alvin[0];
 
+
 let newPlaylist = {
+    userID: melissa._id.toString(),
+    userName: melissa.username,
+    title: 'My First Generated Playlist',
+    caption: "This was my first attempt at using the playlist generator. Let me know what you guys think!",
+    posted: true,
+    tracks: ["6yjyAu1YQ9D2AqhEwjwVWU","4KoecuyOpZaNFZ0UqVsllc","3VA8T3rNy5V24AXxNK5u9E","6nxQdXa1uAL0rY72wPZu89","2DjxBxpUUVLoGNTcTQhkVT","5lBUY5BqQfbNCaMWkVfwpH","33zcmmElV1YbRZe57biUjg","2n5gVJ9fzeX2SSWlLQuyS9","6Dwtha2FtZFoMEBh5GR2sq","5fyIGoaaKelzdyW8ELhYJZ","0IF0vGwaJQ8ZCh0QxhW6OV"],
+    likes: [],
+    comments: [{_id: bernard._id, comment: "I have to know what your settings were when you generated this.", author: bernard.username, postDate: "4/26/2024 2:25:12 PM"}, 
+               {_id: cade._id, comment: "Pretty cool what the playlist generator can do.", author: cade.username, postDate: "4/26/2024 4:45:14 PM"}
+    ]
+}
+
+
+
+let insertInfo = await playlistCollection.insertOne(newPlaylist);
+await addLike(joe._id.toString(), insertInfo.insertedId.toString());
+await addLike(bernard._id.toString(), insertInfo.insertedId.toString());
+await addLike(cade._id.toString(), insertInfo.insertedId.toString());
+
+let user = await usersCollection.findOneAndUpdate(
+    { username: melissa.username},
+    { $push: { createdPlaylists: insertInfo.insertedId.toString() } },
+    { returnOriginal: false } 
+);
+
+
+
+newPlaylist = {
     userID: bernard._id.toString(),
     userName: bernard.username,
     title: 'Sadness',
@@ -40,12 +69,12 @@ let newPlaylist = {
 
 
 
-let insertInfo = await playlistCollection.insertOne(newPlaylist);
+insertInfo = await playlistCollection.insertOne(newPlaylist);
 await addLike(joe._id.toString(), insertInfo.insertedId.toString());
 await addLike(melissa._id.toString(), insertInfo.insertedId.toString());
 
 
-let user = await usersCollection.findOneAndUpdate(
+user = await usersCollection.findOneAndUpdate(
     { username: bernard.username},
     { $push: { createdPlaylists: insertInfo.insertedId.toString() } },
     { returnOriginal: false } 
