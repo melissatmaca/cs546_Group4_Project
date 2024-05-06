@@ -24,9 +24,9 @@ The logout button simply logs the user out and returns them to the login screen 
 
 
 Testing:
-We have created a seed file to make testing easier. this can be run using "npm seed". This seed file adds 4 accounts and addssome playlist and like for each. The log in information for each of them can be found in the seed.js file.
+We have created a seed file to make testing easier. this can be run using "npm run seed". This seed file adds 5 accounts and adds some playlists with some lkes/comments for each. The log in information for each of them can be found in the seed.js file.
 
-Because the spotify API requires that accounts be added to spotifys developer dashboard, we have provided an account both with and without spotify premium that have already been added to the dashboard (Please note that if a user is already logged into their spotify account on their browser, the login will attempt to use that account which is not added to the dashboard. Because of this, we recomend using a private browser and one of the accounts listed in the account.txt file).
+Since the spotify API is in development mode, it requires that accounts be manually added to Spotifys developer dashboard, therefore we have provided an account both with and without Spotify Premium that have already been added to the dashboard (Please note that if a user is already logged into their spotify account on their browser, the login will attempt to use that account which is not added to the dashboard. Because of this, we recomend using a private browser or signing out of you Spotify account in your borwser so you can use one of the accounts listed in the account.txt file).
 
 
 Credits:
