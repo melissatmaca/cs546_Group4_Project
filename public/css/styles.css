@@ -799,3 +799,28 @@ body.del-page {
 #errorPageContainer a{
   color: white;
 }
+
+.landingPage{
+  background-color: rgb(25, 25, 25);
+  padding: 40px;
+  margin: 50px;
+  border-radius: 20px;
+  text-align: center;
+  font-size: 25px;
+}
+.landingPage p{
+  margin: 20px;
+}
+.landingPage a{
+  background-color: #1ed760;
+  border-radius: 30px;
+  font-weight: bold;
+  font-size: 20px;
+  padding: 15px;
+  height: 48px;
+  width: 100px;
+  cursor: pointer;
+  border: 4px black;
+  color: black;
+  text-decoration: none;
+}
