@@ -379,7 +379,7 @@ router.route('/register')
   })
   .post(async(req, res) => {
       let userData = req.body;
-      if (!userData){
+      if (!userData || Object.keys(userData).length < 6){
           return res.status(400).render('register', {error: "All fields need to be supplied."});
       }
 
